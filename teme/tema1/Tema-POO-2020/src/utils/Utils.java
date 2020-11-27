@@ -1,14 +1,16 @@
 package utils;
 
+import actor.Actor;
 import actor.ActorsAwards;
 import common.Constants;
 import entertainment.Genre;
+import entertainment.Season;
+import entertainment.Video;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import users.User;
 
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.LinkedHashMap;
+import java.util.*;
 
 /**
  * The class contains static methods that helps with parsing.
@@ -24,6 +26,7 @@ public final class Utils {
 
     /**
      * Transforms a string into an enum
+     *
      * @param genre of video
      * @return an Genre Enum
      */
@@ -55,6 +58,7 @@ public final class Utils {
 
     /**
      * Transforms a string into an enum
+     *
      * @param award for actors
      * @return an ActorsAwards Enum
      */
@@ -69,8 +73,20 @@ public final class Utils {
         };
     }
 
+    public static List<ActorsAwards> actorsAwardsList(final List<String> awards){
+        List<ActorsAwards> awardsList = new ArrayList<>();
+        for (String award : awards) {
+            awardsList.add(stringToAwards(award));
+        }
+        if(!awards.isEmpty()) {
+            return awardsList;
+        }
+        return null;
+    }
+
     /**
      * Transforms an array of JSON's into an array of strings
+     *
      * @param array of JSONs
      * @return a list of strings
      */
@@ -88,6 +104,7 @@ public final class Utils {
 
     /**
      * Transforms an array of JSON's into a map
+     *
      * @param jsonActors array of JSONs
      * @return a map with ActorsAwardsa as key and Integer as value
      */
@@ -105,6 +122,7 @@ public final class Utils {
 
     /**
      * Transforms an array of JSON's into a map
+     *
      * @param movies array of JSONs
      * @return a map with String as key and Integer as value
      */
@@ -123,4 +141,96 @@ public final class Utils {
 
         return mapVideos;
     }
+
+    public static User stringToUserSearch(List<User> users, String username) {
+        for (User user : users) {
+            if (user.getUsername().equals(username)) {
+                return user;
+            }
+        }
+        return null;
+    }
+
+    public static Video stringToVideoSearch(List<Video> videos, String title) {
+        for (Video video : videos) {
+            if (video.getTitle().equals(title)) {
+                return video;
+            }
+        }
+        return null;
+    }
+
+    public static List<Video> stringToVideoSearchList(List<Video> videos, List<String> titles) {
+        List<Video> videoList = new ArrayList<>();
+        for (String title : titles) {
+            Video video = Utils.stringToVideoSearch(videos, title);
+            if(video != null) {
+                videoList.add(video);
+            }
+        }
+        if(!videoList.isEmpty()) {
+            return videoList;
+        }
+        return null;
+    }
+
+    public static Season numberToSeasonSearch(List<Season> seasons, int currentSeason) {
+        for (Season season : seasons) {
+            if (season.getCurrentSeason() == currentSeason) {
+                return season;
+            }
+        }
+        return null;
+    }
+
+    public static Actor stringToActorSearch(List<Actor> actors, String name) {
+        for(Actor actor : actors) {
+            if(actor.getName().equals(name)) {
+                return actor;
+            }
+        }
+        return null;
+    }
+
+    public static List<Actor> stringToActorSearchList(List<Actor> actors, List<String> names) {
+        List<Actor> actorlist = new ArrayList<>();
+        for(String name : names) {
+            Actor actor = stringToActorSearch(actors, name);
+            if(actor != null) {
+                actorlist.add(actor);
+            }
+        }
+        if(!actorlist.isEmpty()) {
+            return actorlist;
+        }
+        return null;
+    }
+
+    public static User searchUserByName(List<User> users, String name) {
+        for(User user : users) {
+            if(user.getUsername().equals(name)) {
+                return user;
+            }
+        }
+        return null;
+    }
+
+    public static Actor searchActorByName(List<Actor> actors, String name) {
+        for(Actor actor : actors) {
+            if(actor.getName().equals(name)) {
+                return actor;
+            }
+        }
+        return null;
+    }
+
+    public static Video searchVideoByName(List<Video> videos, String name) {
+        for(Video video : videos) {
+            if(video.getTitle().equals(name)) {
+                return video;
+            }
+        }
+        return null;
+    }
+
 }

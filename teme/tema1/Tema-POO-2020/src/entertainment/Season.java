@@ -8,7 +8,7 @@ import java.util.List;
  * <p>
  * DO NOT MODIFY
  */
-public final class Season {
+public final class Season{
     /**
      * Number of current season
      */
@@ -22,10 +22,13 @@ public final class Season {
      */
     private List<Double> ratings;
 
+    private  List<String> ratedBy;
+
     public Season(final int currentSeason, final int duration) {
         this.currentSeason = currentSeason;
         this.duration = duration;
         this.ratings = new ArrayList<>();
+        this.ratedBy = new ArrayList<>();
     }
 
     public int getDuration() {
@@ -44,6 +47,29 @@ public final class Season {
         this.ratings = ratings;
     }
 
+
+    public int getCurrentSeason() {
+        return currentSeason;
+    }
+
+    public boolean ratedBy(String username) {
+        return ratedBy.contains(username);
+    }
+
+    public void addUserRatingList(String username) {
+        ratedBy.add(username);
+    }
+
+    public Double calculateAverageRating() {
+        Double sum = 0.0;
+        for(Double d : getRatings()) {
+            sum += d;
+        }
+        if(getRatings().size() != 0) {
+            return sum / (double) getRatings().size();
+        }
+        return 0.0;
+    }
     @Override
     public String toString() {
         return "Episode{"
