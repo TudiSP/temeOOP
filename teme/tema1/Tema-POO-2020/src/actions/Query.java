@@ -164,14 +164,19 @@ public class Query implements Action{
         sortedVideoList.addAll(MainContainer.getVideos());
 
         Iterator<Video> i = sortedVideoList.iterator();
-        while(i.hasNext()) { // remove all actors with no rated videos from list
+        while(i.hasNext()) { // remove all videos which have no views or do not check required filters
             Video video = i.next();
-            if(!video.checkFilters(filters)) {
+            if(!video.checkFilters(filters) || video.getViews() == 0) {
                 i.remove();
             }
         }
         if(!sortedVideoList.isEmpty()) { //if list is not empty sort it
+            for(Video video : sortedVideoList) {
+                System.out.println(video.getTitle() + " " + video.getViews());
+            }
+            System.out.println("---------------");
             sortedVideoList = Video.sortVideoList(sortedVideoList, number, criteria, sort_type);
+
             return fileWriter.writeFile(id, null, "Query result: " + Video.toStringVideoList(sortedVideoList));
             // generate output and return it as JSONObject
         }

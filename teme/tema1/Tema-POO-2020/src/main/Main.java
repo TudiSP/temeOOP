@@ -153,7 +153,7 @@ public final class Main {
                             actiondata.getCriteria());
                     break;
                 case "recommendation":
-                    action = new Recommendation(actiondata.getActionId(), actiondata.getType(), actiondata.getUsername());
+                    action = new Recommendation(actiondata.getActionId(), actiondata.getType(), actiondata.getUsername(), actiondata.getGenre());
                     break;
                 default:
                     throw new IllegalStateException("Unexpected value: " + actiondata.getActionType());

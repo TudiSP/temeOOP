@@ -58,7 +58,10 @@ public class Command implements Action{
     public JSONObject rating(Writer fileWriter, Video video, User user) throws IOException{
         switch (video.getType()){
             case "movie":
-                if(!((Movie) video).ratedBy(user.getUsername())) {
+                if(!user.hasSeen(video.getTitle())) {
+                    return fileWriter.writeFile(getId(), null, "error -> " + video.getTitle() + " is not seen");
+                }
+                if(!((Movie) video).ratedBy(user.getUsername()) && user.hasSeen(video.getTitle())) {
                     ((Movie) video).addUserRatingList(user.getUsername()); // keep track on which user rated the movie
                     ((Movie) video).getRatings().add(getRating()); // add ratings
                     ((Movie) video).calculateAverageRating(); // recalculate average rating
@@ -74,6 +77,9 @@ public class Command implements Action{
                 // return message as JSONObject
             case "serial":
                 Season season  = Utils.numberToSeasonSearch(((Show) video).getSeasons(), getNumberSeason());
+                if(!user.hasSeen(video.getTitle())) {
+                    return fileWriter.writeFile(getId(), null, "error -> " + video.getTitle() + " is not seen");
+                }
                 if(season != null && !season.ratedBy(user.getUsername())) {
                     season.addUserRatingList(user.getUsername());
                     season.getRatings().add(getRating()); // add ratings

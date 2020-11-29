@@ -39,6 +39,8 @@ public abstract class Video {
                 @Override
                 public int compare(Video o1, Video o2) {
                     switch (criteria) {
+                        case "ratings_unseen":
+                            return o1.averageRating.compareTo(o2.averageRating);
                         case "ratings":
                             if(o1.averageRating.compareTo(o2.averageRating) != 0) {
                                 return o1.averageRating.compareTo(o2.averageRating);
@@ -69,6 +71,8 @@ public abstract class Video {
                 @Override
                 public int compare(Video o1, Video o2) {
                     switch (criteria) {
+                        case "ratings_unseen":
+                            return o1.averageRating.compareTo(o2.averageRating);
                         case "ratings":
                             if(o1.averageRating.compareTo(o2.averageRating) != 0) {
                                 return o1.averageRating.compareTo(o2.averageRating);
