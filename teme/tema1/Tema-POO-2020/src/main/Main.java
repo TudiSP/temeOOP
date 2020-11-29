@@ -3,6 +3,7 @@ package main;
 import actions.Action;
 import actions.Command;
 import actions.Query;
+import actions.Recommendation;
 import common.MainContainer;
 import entertainment.Show;
 import entertainment.Video;
@@ -152,6 +153,7 @@ public final class Main {
                             actiondata.getCriteria());
                     break;
                 case "recommendation":
+                    action = new Recommendation(actiondata.getActionId(), actiondata.getType(), actiondata.getUsername());
                     break;
                 default:
                     throw new IllegalStateException("Unexpected value: " + actiondata.getActionType());

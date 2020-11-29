@@ -184,6 +184,10 @@ public abstract class Video {
         this.nrFavourites = nrFavourites;
     }
 
+    public Double getViews() {
+        return views;
+    }
+
     @Override
     public String toString() {
         return "Video{" +

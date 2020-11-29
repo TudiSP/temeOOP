@@ -128,12 +128,10 @@ public class Query implements Action{
         Iterator<Video> i = sortedVideoList.iterator();
         while(i.hasNext()) { // remove all actors with no rated videos from list
             Video video = i.next();
-            System.out.println(video.getTitle() + " " + video.getnrFavourites());
             if(!video.checkFilters(filters) || video.getnrFavourites() == 0) {
                 i.remove();
             }
         }
-        System.out.println("---------------");
         if(!sortedVideoList.isEmpty()) { //if list is not empty sort it
             sortedVideoList = Video.sortVideoList(sortedVideoList, number, criteria, sort_type);
             return fileWriter.writeFile(id, null, "Query result: " + Video.toStringVideoList(sortedVideoList));
