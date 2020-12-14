@@ -6,12 +6,12 @@ import users.User;
 
 import java.util.List;
 
-public class MainContainer {
+public final class MainContainer {
     private static List<Video> videos;
     private static List<User> users;
     private static List<Actor> actors;
 
-    public  MainContainer() {
+    private MainContainer() {
 
     }
 
@@ -19,7 +19,7 @@ public class MainContainer {
         return videos;
     }
 
-    public static void setVideos(List<Video> videos) {
+    public static void setVideos(final List<Video> videos) {
         MainContainer.videos = videos;
     }
 
@@ -27,7 +27,7 @@ public class MainContainer {
         return users;
     }
 
-    public static void setUsers(List<User> users) {
+    public static void setUsers(final List<User> users) {
         MainContainer.users = users;
     }
 
@@ -35,7 +35,7 @@ public class MainContainer {
         return actors;
     }
 
-    public static void setActors(List<Actor> actors) {
+    public static void setActors(final List<Actor> actors) {
         MainContainer.actors = actors;
     }
 

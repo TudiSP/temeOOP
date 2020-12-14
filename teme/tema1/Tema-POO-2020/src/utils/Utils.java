@@ -10,11 +10,14 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import users.User;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * The class contains static methods that helps with parsing.
- *
+ * <p>
  * We suggest you add your static methods here or in a similar class.
  */
 public final class Utils {
@@ -73,12 +76,12 @@ public final class Utils {
         };
     }
 
-    public static List<ActorsAwards> actorsAwardsList(final List<String> awards){
+    public static List<ActorsAwards> actorsAwardsList(final List<String> awards) {
         List<ActorsAwards> awardsList = new ArrayList<>();
         for (String award : awards) {
             awardsList.add(stringToAwards(award));
         }
-        if(!awards.isEmpty()) {
+        if (!awards.isEmpty()) {
             return awardsList;
         }
         return null;
@@ -142,7 +145,13 @@ public final class Utils {
         return mapVideos;
     }
 
-    public static User stringToUserSearch(List<User> users, String username) {
+    /**
+     * Search for a user in a list based on it's username
+     * @param users
+     * @param username
+     * @return
+     */
+    public static User stringToUserSearch(final List<User> users, final String username) {
         for (User user : users) {
             if (user.getUsername().equals(username)) {
                 return user;
@@ -151,7 +160,13 @@ public final class Utils {
         return null;
     }
 
-    public static Video stringToVideoSearch(List<Video> videos, String title) {
+    /**
+     * search for a video in a list based on a title(String)
+     * @param videos
+     * @param title
+     * @return
+     */
+    public static Video stringToVideoSearch(final List<Video> videos, final String title) {
         for (Video video : videos) {
             if (video.getTitle().equals(title)) {
                 return video;
@@ -160,21 +175,34 @@ public final class Utils {
         return null;
     }
 
-    public static List<Video> stringToVideoSearchList(List<Video> videos, List<String> titles) {
+    /**
+     * get a sub-list of videos based on a list of titles(Strings)
+     * @param videos
+     * @param titles
+     * @return
+     */
+    public static List<Video> stringToVideoSearchList(final List<Video> videos,
+                                                      final List<String> titles) {
         List<Video> videoList = new ArrayList<>();
         for (String title : titles) {
             Video video = Utils.stringToVideoSearch(videos, title);
-            if(video != null) {
+            if (video != null) {
                 videoList.add(video);
             }
         }
-        if(!videoList.isEmpty()) {
+        if (!videoList.isEmpty()) {
             return videoList;
         }
         return null;
     }
 
-    public static Season numberToSeasonSearch(List<Season> seasons, int currentSeason) {
+    /**
+     * get a Season by it's number in a list
+     * @param seasons
+     * @param currentSeason
+     * @return
+     */
+    public static Season numberToSeasonSearch(final List<Season> seasons, final int currentSeason) {
         for (Season season : seasons) {
             if (season.getCurrentSeason() == currentSeason) {
                 return season;
@@ -183,54 +211,84 @@ public final class Utils {
         return null;
     }
 
-    public static Actor stringToActorSearch(List<Actor> actors, String name) {
-        for(Actor actor : actors) {
-            if(actor.getName().equals(name)) {
+    /**
+     * output an actor searched in a list of actors by it's name(String)
+     * @param actors
+     * @param name
+     * @return
+     */
+    public static Actor stringToActorSearch(final List<Actor> actors, final String name) {
+        for (Actor actor : actors) {
+            if (actor.getName().equals(name)) {
                 return actor;
             }
         }
         return null;
     }
 
-    public static List<Actor> stringToActorSearchList(List<Actor> actors, List<String> names) {
+    /**
+     * get a sub-list of actors based on a list of names
+     * @param actors
+     * @param names
+     * @return
+     */
+    public static List<Actor> stringToActorSearchList(final List<Actor> actors,
+                                                      final List<String> names) {
         List<Actor> actorlist = new ArrayList<>();
-        for(String name : names) {
+        for (String name : names) {
             Actor actor = stringToActorSearch(actors, name);
-            if(actor != null) {
+            if (actor != null) {
                 actorlist.add(actor);
             }
         }
-        if(!actorlist.isEmpty()) {
+        if (!actorlist.isEmpty()) {
             return actorlist;
         }
         return null;
     }
 
-    public static User searchUserByName(List<User> users, String name) {
-        for(User user : users) {
-            if(user.getUsername().equals(name)) {
+    /**
+     * output an user by searching by it's name(String) in a list
+     * @param users
+     * @param name
+     * @return
+     */
+    public static User searchUserByName(final List<User> users, final String name) {
+        for (User user : users) {
+            if (user.getUsername().equals(name)) {
                 return user;
             }
         }
         return null;
     }
 
-    public static Actor searchActorByName(List<Actor> actors, String name) {
-        for(Actor actor : actors) {
-            if(actor.getName().equals(name)) {
+    /**
+     * output an actor by searching by it's name(String) in a list
+     * @param actors
+     * @param name
+     * @return
+     */
+    public static Actor searchActorByName(final List<Actor> actors, final String name) {
+        for (Actor actor : actors) {
+            if (actor.getName().equals(name)) {
                 return actor;
             }
         }
         return null;
     }
 
-    public static Video searchVideoByName(List<Video> videos, String name) {
-        for(Video video : videos) {
-            if(video.getTitle().equals(name)) {
+    /**
+     * output a video by searching by it's name(String) in a list
+     * @param videos
+     * @param name
+     * @return
+     */
+    public static Video searchVideoByName(final List<Video> videos, final String name) {
+        for (Video video : videos) {
+            if (video.getTitle().equals(name)) {
                 return video;
             }
         }
         return null;
     }
-
 }

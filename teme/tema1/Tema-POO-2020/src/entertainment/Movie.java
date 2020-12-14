@@ -6,14 +6,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class Movie extends Video {
+    private final List<String> actorNames;
+    private final List<String> ratedBy;
     private List<Double> ratings;
     private List<Actor> actors;
-    private List<String> actorNames;
-    private List<String> ratedBy;
 
-    public Movie(int launchYear, String title, ArrayList<String> genres, int duration, ArrayList<String> actorNames, String type) {
+    /**
+     *
+     * @param launchYear
+     * @param title
+     * @param genres
+     * @param duration
+     * @param actorNames
+     * @param type
+     */
+    public Movie(final int launchYear, final String title,
+                 final ArrayList<String> genres,
+                 final int duration, final ArrayList<String> actorNames,
+                 final String type) {
         super(launchYear, title, genres, type);
-        super.duration = Double.valueOf(duration);
+        super.duration = (double) duration;
         this.actorNames = actorNames;
         this.ratings = new ArrayList<>();
         this.ratedBy = new ArrayList<>();
@@ -24,16 +36,24 @@ public final class Movie extends Video {
         return ratings;
     }
 
-    public void setRatings(List<Double> ratings) {
+    public void setRatings(final List<Double> ratings) {
         this.ratings = ratings;
     }
 
-
-    public boolean ratedBy(String username) {
+    /**
+     * checks if this movie has been already rated by a user based on it's username
+     * @param username
+     * @return
+     */
+    public boolean ratedBy(final String username) {
         return ratedBy.contains(username);
     }
 
-    public void addUserRatingList(String username) {
+    /**
+     * add's user to ratedBy list
+     * @param username
+     */
+    public void addUserRatingList(final String username) {
         ratedBy.add(username);
     }
 
@@ -41,7 +61,7 @@ public final class Movie extends Video {
         return actors;
     }
 
-    public void setActors(List<Actor> actors) {
+    public void setActors(final List<Actor> actors) {
         this.actors = actors;
     }
 
@@ -49,21 +69,15 @@ public final class Movie extends Video {
         return actorNames;
     }
 
+    /**
+     * calculates a movie's average rating based on it's ratings
+     */
     public void calculateAverageRating() {
         Double sum = 0.0;
-        for(Double d : getRatings()) {
+        for (Double d : getRatings()) {
             sum += d;
         }
         averageRating = sum / (double) getRatings().size();
-    }
-
-    @Override
-    public String toString() {
-        return "Movie{" +
-                "launchYear=" + launchYear +
-                ", title='" + title + '\'' +
-                ", genres=" + genres +
-                '}';
     }
 }
 

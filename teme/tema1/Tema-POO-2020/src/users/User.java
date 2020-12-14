@@ -1,96 +1,171 @@
 package users;
 
-import common.MainContainer;
 import entertainment.Video;
 
-import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 
-public class User {
-    private String username;
-    private String subscription ;
-    private Map<String, Integer> history;
-    private List<String> favourite;
+public final class User {
+    private final String username;
+    private final String subscription;
+    private final Map<String, Integer> history;
+    private final List<String> favourite;
+    private int noRatings;
 
-    public User(String username, String subscription, Map<String, Integer> history, List<String> favourite) {
+    /**
+     *
+     * @param username
+     * @param subscription
+     * @param history
+     * @param favourite
+     */
+
+    public User(final String username, final String subscription, final Map<String,
+            Integer> history, final List<String> favourite) {
         this.username = username;
         this.subscription = subscription;
         this.history = history;
         this.favourite = favourite;
+        this.noRatings = 0;
 
     }
-    public boolean hasSeen(String title) {
-        if(getHistory().containsKey(title)) {
-            return true;
+
+    /**
+     * sort a user list based on criteria and sortType and return it
+     * @param sortedUserList
+     * @param number
+     * @param criteria
+     * @param sortType
+     * @return
+     */
+    public static List<User> sortUserList(final List<User> sortedUserList,
+                                          final int number, final String criteria,
+                                          final String sortType) {
+        if (sortType.equals("asc")) {
+            sortedUserList.sort(new Comparator<User>() {
+                @Override
+                public int compare(final User o1, final User o2) {
+                    if (Integer.compare(o1.noRatings, o2.noRatings) != 0) {
+                        return Integer.compare(o1.noRatings, o2.noRatings);
+                    } else {
+                        return o1.username.compareTo(o2.username);
+                    }
+                }
+            });
+        } else {
+            sortedUserList.sort(new Comparator<User>() {
+                @Override
+                public int compare(final User o1, final User o2) {
+                    if (Integer.compare(o1.noRatings, o2.noRatings) != 0) {
+                        return Integer.compare(o1.noRatings, o2.noRatings);
+                    } else {
+                        return o1.username.compareTo(o2.username);
+                    }
+                }
+            }.reversed());
         }
-        return false;
+
+        if (number != 0 && number < sortedUserList.size()) {
+            Iterator<User> i = sortedUserList.listIterator(number);
+            while (i.hasNext()) {
+                i.next();
+                i.remove();
+            }
+        }
+        return sortedUserList;
     }
 
-    public static Double numberOfViews(Video video, List<User> users) {
-        Double no_views = 0.0;
-        if(users != null) {
+    /**
+     * convert a list of users to a list String based on their usernames
+     * @param users
+     * @return
+     */
+    public static String toStringUserList(final List<User> users) {
+        String output = "";
+
+        output += "[";
+        for (User user : users) {
+            output += user.username;
+            output += ", ";
+        }
+        // remove last 2 characters -> ", "
+        output = output.substring(0, output.length() - 2);
+        output += "]";
+
+        return output;
+    }
+
+    /**
+     * calculate how many views a video has
+     * @param video
+     * @param users
+     * @return
+     */
+    public static Double numberOfViews(final Video video, final List<User> users) {
+        Double noViews = 0.0;
+        if (users != null) {
             for (User user : users) {
                 if (user.hasSeen(video.getTitle())) {
-                    no_views++;
+                    noViews += user.history.get(video.getTitle());
                 }
             }
         }
-        return no_views;
+        return noViews;
     }
 
-    public static Double numberOfFavourites(Video video, List<User> users) {
-        Double no_fav = 0.0;
-        if(users != null) {
+    /**
+     * calculate how many users added the video to their favourite list
+     * @param video
+     * @param users
+     * @return
+     */
+    public static Double numberOfFavourites(final Video video, final List<User> users) {
+        Double noFav = 0.0;
+        if (users != null) {
             for (User user : users) {
                 for (String favourite : user.getFavourite()) {
                     if (video.getTitle().equals(favourite)) {
-                        no_fav++;
+                        noFav++;
                     }
                 }
             }
         }
-        return no_fav;
+        return noFav;
+    }
+
+    /**
+     * calculate if a user has seen a video
+     * @param title
+     * @return
+     */
+    public boolean hasSeen(final String title) {
+        return getHistory().containsKey(title);
     }
 
     public String getUsername() {
         return username;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
     public String getSubscription() {
         return subscription;
-    }
-
-    public void setSubscription(String subscription) {
-        this.subscription = subscription;
     }
 
     public List<String> getFavourite() {
         return favourite;
     }
 
-    public void setFavourite(List<String> favourite) {
-        this.favourite = favourite;
-    }
-
     public Map<String, Integer> getHistory() {
         return history;
     }
 
-    public void setHistory(Map<String, Integer> history) {
-        this.history = history;
+    public int getNoRatings() {
+        return noRatings;
     }
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "username='" + username + '\'' +
-                ", subscription='" + subscription + '\'' +
-                '}';
+    public void setNoRatings(final int noRatings) {
+        this.noRatings = noRatings;
     }
 }

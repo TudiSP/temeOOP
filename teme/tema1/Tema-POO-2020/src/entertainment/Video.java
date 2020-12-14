@@ -1,15 +1,15 @@
 package entertainment;
 
-import actor.Actor;
 import common.MainContainer;
 import users.User;
 import utils.Utils;
+
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
-public abstract class Video {
+public class Video {
     protected int launchYear;
     protected String title;
     protected List<Genre> genres;
@@ -19,12 +19,21 @@ public abstract class Video {
     protected Double duration;
     protected Double views;
 
-    public Video(int launchYear, String title, ArrayList<String> genres, String type) {
+    /**
+     *
+     * @param launchYear
+     * @param title
+     * @param genres
+     * @param type
+     */
+    public Video(final int launchYear, final String title, final ArrayList<String> genres,
+                 final String type) {
         this.launchYear = launchYear;
         this.title = title;
         this.genres = new ArrayList<>();
-        for(int i = 0; i < genres.size(); i++) {
-            this.genres.add(Utils.stringToGenre(genres.get(i))); // convert Arraylist<String> to List<Genre>/Arraylist<Genre>
+        for (int i = 0; i < genres.size(); i++) {
+            // convert Arraylist<String> to List<Genre>/Arraylist<Genre>
+            this.genres.add(Utils.stringToGenre(genres.get(i)));
         }
         this.type = type;
         this.nrFavourites = User.numberOfFavourites(this, MainContainer.getUsers());
@@ -32,32 +41,42 @@ public abstract class Video {
         this.averageRating = 0.0;
     }
 
-    public static List<Video> sortVideoList(List<Video> videos, int numberOfVideos, String criteria, String sortingOrder) {
+    /**
+     * sorts video list based on a criteria and sorting order and trims it's size
+     * to the numberOfVideos parameter, or less.
+     * @param videos
+     * @param numberOfVideos
+     * @param criteria
+     * @param sortingOrder
+     * @return
+     */
+    public static List<Video> sortVideoList(final List<Video> videos, final int numberOfVideos,
+                                            final String criteria, final String sortingOrder) {
         List<Video> sortedVideoList = videos;
-        if(sortingOrder.equals("asc")) {
+        if (sortingOrder.equals("asc")) {
             sortedVideoList.sort(new Comparator<Video>() {
                 @Override
-                public int compare(Video o1, Video o2) {
+                public int compare(final Video o1, final Video o2) {
                     switch (criteria) {
                         case "ratings_unseen":
                             return o1.averageRating.compareTo(o2.averageRating);
                         case "ratings":
-                            if(o1.averageRating.compareTo(o2.averageRating) != 0) {
+                            if (o1.averageRating.compareTo(o2.averageRating) != 0) {
                                 return o1.averageRating.compareTo(o2.averageRating);
                             }
                             return o1.title.compareTo(o2.title);
                         case "favorite":
-                            if(o1.nrFavourites.compareTo(o2.nrFavourites) != 0) {
+                            if (o1.nrFavourites.compareTo(o2.nrFavourites) != 0) {
                                 return o1.nrFavourites.compareTo(o2.nrFavourites);
                             }
                             return o1.title.compareTo(o2.title);
                         case "longest":
-                            if(o1.duration.compareTo(o2.duration) != 0) {
+                            if (o1.duration.compareTo(o2.duration) != 0) {
                                 return o1.duration.compareTo(o2.duration);
                             }
                             return o1.title.compareTo(o2.title);
                         case "most_viewed":
-                            if(o1.views.compareTo(o2.views) != 0) {
+                            if (o1.views.compareTo(o2.views) != 0) {
                                 return o1.views.compareTo(o2.views);
                             }
                             return o1.title.compareTo(o2.title);
@@ -69,27 +88,27 @@ public abstract class Video {
         } else { // do in descendent order
             sortedVideoList.sort(new Comparator<Video>() {
                 @Override
-                public int compare(Video o1, Video o2) {
+                public int compare(final Video o1, final Video o2) {
                     switch (criteria) {
                         case "ratings_unseen":
                             return o1.averageRating.compareTo(o2.averageRating);
                         case "ratings":
-                            if(o1.averageRating.compareTo(o2.averageRating) != 0) {
+                            if (o1.averageRating.compareTo(o2.averageRating) != 0) {
                                 return o1.averageRating.compareTo(o2.averageRating);
                             }
                             return o1.title.compareTo(o2.title);
                         case "favorite":
-                            if(o1.nrFavourites.compareTo(o2.nrFavourites) != 0) {
+                            if (o1.nrFavourites.compareTo(o2.nrFavourites) != 0) {
                                 return o1.nrFavourites.compareTo(o2.nrFavourites);
                             }
                             return o1.title.compareTo(o2.title);
                         case "longest":
-                            if(o1.duration.compareTo(o2.duration) != 0) {
+                            if (o1.duration.compareTo(o2.duration) != 0) {
                                 return o1.duration.compareTo(o2.duration);
                             }
                             return o1.title.compareTo(o2.title);
                         case "most_viewed":
-                            if(o1.views.compareTo(o2.views) != 0) {
+                            if (o1.views.compareTo(o2.views) != 0) {
                                 return o1.views.compareTo(o2.views);
                             }
                             return o1.title.compareTo(o2.title);
@@ -100,7 +119,7 @@ public abstract class Video {
             }.reversed());
         }
 
-        if(numberOfVideos != 0 && numberOfVideos < sortedVideoList.size()) {
+        if (numberOfVideos != 0 && numberOfVideos < sortedVideoList.size()) {
             Iterator<Video> i = sortedVideoList.listIterator(numberOfVideos);
             while (i.hasNext()) {
                 i.next();
@@ -110,11 +129,16 @@ public abstract class Video {
         return sortedVideoList;
     }
 
-    public static String toStringVideoList(List<Video> videos) {
-        String output = new String();
+    /**
+     * takes a video list and converts it into a string based on their titles
+     * @param videos
+     * @return
+     */
+    public static String toStringVideoList(final List<Video> videos) {
+        String output = "";
 
         output += "[";
-        for(Video video : videos) {
+        for (Video video : videos) {
             output += video.title;
             output += ", ";
         }
@@ -124,14 +148,19 @@ public abstract class Video {
         return output;
     }
 
-    public boolean checkFilters(List<List<String>> filters) {
-        if(filters.get(0).get(0) != null) {
+    /**
+     * check the filters for this video
+     * @param filters
+     * @return
+     */
+    public final boolean checkFilters(final List<List<String>> filters) {
+        if (filters.get(0).get(0) != null) {
             if (launchYear != Integer.parseInt(filters.get(0).get(0))) { // check for first filter
                 return false;
             }
         }
 
-        if(filters.get(1).get(0) != null) {
+        if (filters.get(1).get(0) != null) {
             for (String genre : filters.get(1)) {
                 if (!genres.contains(Utils.stringToGenre(genre))) { //check for genres
                     return false;
@@ -141,62 +170,47 @@ public abstract class Video {
         return true;
     }
 
-    public Double getAverageRating() {
+    public final Double getAverageRating() {
         return averageRating;
     }
-    public void setAverageRating(Double averageRating) {
-        this.averageRating = averageRating;
-    }
 
-    public int getLaunchYear() {
-        return launchYear;
-    }
-
-    public void setLaunchYear(int launchYear) {
-        this.launchYear = launchYear;
-    }
-
-    public String getTitle() {
+    public final String getTitle() {
         return title;
     }
 
-    public void setTitle(String title) {
+    public final void setTitle(final String title) {
         this.title = title;
     }
 
-    public List<Genre> getGenres() {
+    public final List<Genre> getGenres() {
         return genres;
     }
 
-    public void setGenres(List<Genre> genres) {
+    public final void setGenres(final List<Genre> genres) {
         this.genres = genres;
     }
 
-    public String getType() {
+    public final String getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public final void setType(final String type) {
         this.type = type;
     }
 
-    public Double getnrFavourites() {
+    public final Double getnrFavourites() {
         return nrFavourites;
     }
 
-    public void setNrFavourites(Double nrFavourites) {
+    public final void setNrFavourites(final Double nrFavourites) {
         this.nrFavourites = nrFavourites;
     }
 
-    public Double getViews() {
+    public final Double getViews() {
         return views;
     }
 
-    @Override
-    public String toString() {
-        return "Video{" +
-                "title='" + title + '\'' +
-                ", type='" + type + '\'' +
-                '}';
+    public final void setViews(final Double views) {
+        this.views = views;
     }
 }

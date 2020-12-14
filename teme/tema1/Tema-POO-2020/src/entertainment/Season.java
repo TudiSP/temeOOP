@@ -8,21 +8,20 @@ import java.util.List;
  * <p>
  * DO NOT MODIFY
  */
-public final class Season{
+public final class Season {
     /**
      * Number of current season
      */
     private final int currentSeason;
+    private final List<String> ratedBy;
     /**
      * Duration in minutes of a season
      */
-    private int duration;
+    private final int duration;
     /**
      * List of ratings for each season
      */
     private List<Double> ratings;
-
-    private  List<String> ratedBy;
 
     public Season(final int currentSeason, final int duration) {
         this.currentSeason = currentSeason;
@@ -33,10 +32,6 @@ public final class Season{
 
     public int getDuration() {
         return duration;
-    }
-
-    public void setDuration(final int duration) {
-        this.duration = duration;
     }
 
     public List<Double> getRatings() {
@@ -52,24 +47,25 @@ public final class Season{
         return currentSeason;
     }
 
-    public boolean ratedBy(String username) {
+    public boolean ratedBy(final String username) {
         return ratedBy.contains(username);
     }
 
-    public void addUserRatingList(String username) {
+    public void addUserRatingList(final String username) {
         ratedBy.add(username);
     }
 
     public Double calculateAverageRating() {
         Double sum = 0.0;
-        for(Double d : getRatings()) {
+        for (Double d : getRatings()) {
             sum += d;
         }
-        if(getRatings().size() != 0) {
+        if (getRatings().size() != 0) {
             return sum / (double) getRatings().size();
         }
         return 0.0;
     }
+
     @Override
     public String toString() {
         return "Episode{"
