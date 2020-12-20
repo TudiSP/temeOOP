@@ -91,27 +91,31 @@ public class Input {
                 //parsing consumer changes
                 JSONArray newConsumersRaw = (JSONArray) monthlyUpdateJSON.get("newConsumers");
                 for (Object newConsumerRaw : newConsumersRaw) {
-                    JSONObject newConsumerJSON = (JSONObject) newConsumerRaw;
-                    int id = ((Long) newConsumerJSON.get("id")).intValue();
-                    int initialBudget = ((Long) newConsumerJSON.get("initialBudget")).intValue();
-                    int monthlyIncome = ((Long) newConsumerJSON.get("monthlyIncome")).intValue();
-                    //populating newConsumers list using ConsumerFactory class
-                    (monthlyUpdates.get(monthlyUpdates.size() - 1))
-                            .addNewConsumer(ConsumerFactory.createConsumer(id, initialBudget,
-                                    monthlyIncome));
+                    if (newConsumerRaw != null) {
+                        JSONObject newConsumerJSON = (JSONObject) newConsumerRaw;
+                        int id = ((Long) newConsumerJSON.get("id")).intValue();
+                        int initialBudget = ((Long) newConsumerJSON.get("initialBudget")).intValue();
+                        int monthlyIncome = ((Long) newConsumerJSON.get("monthlyIncome")).intValue();
+                        //populating newConsumers list using ConsumerFactory class
+                        (monthlyUpdates.get(monthlyUpdates.size() - 1))
+                                .addNewConsumer(ConsumerFactory.createConsumer(id, initialBudget,
+                                        monthlyIncome));
+                    }
                 }
 
                 //parsing cost changes
                 JSONArray costChangesRaw = (JSONArray) monthlyUpdateJSON.get("costsChanges");
                 for (Object costChangeRaw : costChangesRaw) {
-                    JSONObject costChangeJSON = (JSONObject) costChangeRaw;
-                    int id = ((Long) costChangeJSON.get("id")).intValue();
-                    int infrastructureCost = ((Long) costChangeJSON.get("infrastructureCost")).intValue();
-                    int productionCost = ((Long) costChangeJSON.get("productionCost")).intValue();
-                    //populating costChanges list using CostChangeFactory class
-                    (monthlyUpdates.get(monthlyUpdates.size() - 1))
-                            .addCostChange(CostChangeFactory.createCostChange(id, infrastructureCost,
-                                    productionCost));
+                    if (costChangeRaw != null) {
+                        JSONObject costChangeJSON = (JSONObject) costChangeRaw;
+                        int id = ((Long) costChangeJSON.get("id")).intValue();
+                        int infrastructureCost = ((Long) costChangeJSON.get("infrastructureCost")).intValue();
+                        int productionCost = ((Long) costChangeJSON.get("productionCost")).intValue();
+                        //populating costChanges list using CostChangeFactory class
+                        (monthlyUpdates.get(monthlyUpdates.size() - 1))
+                                .addCostChange(CostChangeFactory.createCostChange(id, infrastructureCost,
+                                        productionCost));
+                    }
                 }
             }
         return nrOfTurns;

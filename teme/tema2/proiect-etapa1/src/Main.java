@@ -1,9 +1,11 @@
 import Utils.Utils;
 import economics.Contract;
+import economics.DelayedContract;
 import economics.MonthlyUpdate;
 import entities.Consumer;
 import entities.Distributor;
 import inputOutput.Input;
+import inputOutput.Output;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -24,12 +26,11 @@ public class Main {
         //initialise the simulation by making first contracts
         List<Contract> contracts = Contract.initialiseContracts(consumers, distributors);
 
-        for (int i = 0; i < nrOfTurns; i++) {
-            for (Consumer consumer : consumers) {
-                if(consumer.isBankrupt()) {
+        //Create and run the simulation
+        Simulation simulation = Simulation.getInstance();
+        simulation.runSimulation(consumers, distributors, contracts, monthlyUpdates, nrOfTurns);
 
-                }
-            }
-        }
+        Output.writeToOutput(args[0], args[1], consumers, distributors, contracts);
+
     }
 }
