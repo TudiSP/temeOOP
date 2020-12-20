@@ -1,8 +1,6 @@
 package inputOutput;
 
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import economics.MonthlyUpdate;
 import entities.Consumer;
 import entities.Distributor;
@@ -19,16 +17,30 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
 
-public class Input {
+/**
+ * Input class created using singleton pattern so that
+ * it can be easily expanded and we only need one really
+ */
+public final class Input {
 
     private static Input input;
 
-    private Input(){
+    /**
+     * private constructor so that objects in this class
+     * cannot be instantiated from outside the class
+     */
+    private Input() {
 
     }
 
+    /**
+     * only one object can exist of this class at one time
+     * and this function makes sure that is the case
+     *
+     * @return
+     */
     public static Input getInput() {
-        if(input == null) {
+        if (input == null) {
             input = new Input();
         }
         return input;
@@ -36,14 +48,15 @@ public class Input {
 
     /**
      * Takes the inputs and populates lists
+     *
      * @param inputFile
      * @throws IOException
      * @throws ParseException
      */
-    public static int parseInputFromFile(final String inputFile, List<Consumer> consumers,
-                                          List<Distributor> distributors,
-                                          List<MonthlyUpdate> monthlyUpdates) throws IOException,
-                                                                                     ParseException {
+    public static int parseInputFromFile(final String inputFile, final List<Consumer> consumers,
+                                         final List<Distributor> distributors,
+                                         final List<MonthlyUpdate> monthlyUpdates)
+            throws IOException, ParseException {
         JSONParser parser = new JSONParser();
 
         Object obj = parser.parse(new FileReader(inputFile));
@@ -84,40 +97,42 @@ public class Input {
 
         //parsing monthlyUpdates
         JSONArray monthlyUpdatesRaw = (JSONArray) jsonObject.get("monthlyUpdates");
-            for (Object monthlyUpdateRaw : monthlyUpdatesRaw) {
-                JSONObject monthlyUpdateJSON = (JSONObject) monthlyUpdateRaw;
-                monthlyUpdates.add(MonthlyUpdateFactory.createMonthlyUpdate());
+        for (Object monthlyUpdateRaw : monthlyUpdatesRaw) {
+            JSONObject monthlyUpdateJSON = (JSONObject) monthlyUpdateRaw;
+            monthlyUpdates.add(MonthlyUpdateFactory.createMonthlyUpdate());
 
-                //parsing consumer changes
-                JSONArray newConsumersRaw = (JSONArray) monthlyUpdateJSON.get("newConsumers");
-                for (Object newConsumerRaw : newConsumersRaw) {
-                    if (newConsumerRaw != null) {
-                        JSONObject newConsumerJSON = (JSONObject) newConsumerRaw;
-                        int id = ((Long) newConsumerJSON.get("id")).intValue();
-                        int initialBudget = ((Long) newConsumerJSON.get("initialBudget")).intValue();
-                        int monthlyIncome = ((Long) newConsumerJSON.get("monthlyIncome")).intValue();
-                        //populating newConsumers list using ConsumerFactory class
-                        (monthlyUpdates.get(monthlyUpdates.size() - 1))
-                                .addNewConsumer(ConsumerFactory.createConsumer(id, initialBudget,
-                                        monthlyIncome));
-                    }
-                }
-
-                //parsing cost changes
-                JSONArray costChangesRaw = (JSONArray) monthlyUpdateJSON.get("costsChanges");
-                for (Object costChangeRaw : costChangesRaw) {
-                    if (costChangeRaw != null) {
-                        JSONObject costChangeJSON = (JSONObject) costChangeRaw;
-                        int id = ((Long) costChangeJSON.get("id")).intValue();
-                        int infrastructureCost = ((Long) costChangeJSON.get("infrastructureCost")).intValue();
-                        int productionCost = ((Long) costChangeJSON.get("productionCost")).intValue();
-                        //populating costChanges list using CostChangeFactory class
-                        (monthlyUpdates.get(monthlyUpdates.size() - 1))
-                                .addCostChange(CostChangeFactory.createCostChange(id, infrastructureCost,
-                                        productionCost));
-                    }
+            //parsing consumer changes
+            JSONArray newConsumersRaw = (JSONArray) monthlyUpdateJSON.get("newConsumers");
+            for (Object newConsumerRaw : newConsumersRaw) {
+                if (newConsumerRaw != null) {
+                    JSONObject newConsumerJSON = (JSONObject) newConsumerRaw;
+                    int id = ((Long) newConsumerJSON.get("id")).intValue();
+                    int initialBudget = ((Long) newConsumerJSON.get("initialBudget")).intValue();
+                    int monthlyIncome = ((Long) newConsumerJSON.get("monthlyIncome")).intValue();
+                    //populating newConsumers list using ConsumerFactory class
+                    (monthlyUpdates.get(monthlyUpdates.size() - 1))
+                            .addNewConsumer(ConsumerFactory.createConsumer(id, initialBudget,
+                                    monthlyIncome));
                 }
             }
+
+            //parsing cost changes
+            JSONArray costChangesRaw = (JSONArray) monthlyUpdateJSON.get("costsChanges");
+            for (Object costChangeRaw : costChangesRaw) {
+                if (costChangeRaw != null) {
+                    JSONObject costChangeJSON = (JSONObject) costChangeRaw;
+                    int id = ((Long) costChangeJSON.get("id")).intValue();
+                    int infrastructureCost = ((Long) costChangeJSON.get("infrastructureCost"))
+                            .intValue();
+                    int productionCost = ((Long) costChangeJSON.get("productionCost")).intValue();
+                    //populating costChanges list using CostChangeFactory class
+                    (monthlyUpdates.get(monthlyUpdates.size() - 1))
+                            .addCostChange(CostChangeFactory.createCostChange(id,
+                                    infrastructureCost,
+                                    productionCost));
+                }
+            }
+        }
         return nrOfTurns;
     }
 }

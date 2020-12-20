@@ -7,18 +7,30 @@ import entities.Distributor;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Observable;
 
+/**
+ * holds data regarding Consumer-Distributor interaction
+ * and has methods that modifies each entity
+ */
 public class Contract {
     protected final int consumerId;
     protected final int distributorId;
-    protected int consumerTax;
+    protected final int consumerTax;
     protected final int distributorRevenue;
     protected final int contractLength;
     protected int monthsLeft;
 
-    public Contract(int consumerId, int distributorId, int consumerTax,
-                    int distributorRevenue, final int contractLength) {
+    /**
+     * Initialises a new Contract using given parameters
+     *
+     * @param consumerId
+     * @param distributorId
+     * @param consumerTax
+     * @param distributorRevenue
+     * @param contractLength
+     */
+    public Contract(final int consumerId, final int distributorId, final int consumerTax,
+                    final int distributorRevenue, final int contractLength) {
         this.consumerId = consumerId;
         this.distributorId = distributorId;
         this.consumerTax = consumerTax;
@@ -27,34 +39,28 @@ public class Contract {
         this.monthsLeft = contractLength;
     }
 
-    public void applyContract(Consumer consumer, Distributor distributor,
-                              List<DelayedContract> delayedContracts) {
-        if (consumer.getBudget() - consumerTax < 0) {
-                delayedContracts.add(delayTax());
-        } else {
-            consumer.setBudget(consumer.getBudget() - consumerTax);
-            distributor.setBudget(distributor.getBudget() + consumerTax);
-        }
-
-        monthsLeft--;
-    }
-
     /**
-     * a method called each month to apply the contracts and dissolve some if expired
+     * a method called each month to apply the contracts and dissolve
+     * them if consumer goes bankrupt. Also it checks to see if contract
+     * is expired and the consumer can sign a new one
+     *
      * @param consumers
      * @param distributors
      * @param contracts
      */
     public static void applyContracts(final List<Consumer> consumers,
                                       final List<Distributor> distributors,
-                                      List<Contract> contracts,
-                                      List<DelayedContract> delayedContracts) {
+                                      final List<Contract> contracts,
+                                      final List<DelayedContract> delayedContracts) {
         Iterator<Contract> i = contracts.iterator();
-        while (i.hasNext()){
+        while (i.hasNext()) {
             Contract contract = i.next();
 
+            //find the consumer and distributor by their id to make changes
             Consumer consumer = Utils.idToConsumerSearch(consumers, contract.consumerId);
             Distributor distributor = Utils.idToDistributorSearch(distributors, contract.distributorId);
+
+            //applies contract only if consumer is not bankrupt
             if (!consumer.isBankrupt()) {
                 contract.applyContract(consumer, distributor, delayedContracts);
             }
@@ -62,7 +68,10 @@ public class Contract {
             if (contract.isExpired() || consumer.isBankrupt()) {
                 consumer.setContractStatus(false);
                 distributor.setNrOfContracts(distributor.getNrOfContracts() - 1);
-                if(consumer.isBankrupt()) {
+                //if consumer is bankrupt then the distributor still needs to pay for
+                // the production cost for that month and will take it into consideration
+                // for future offers
+                if (consumer.isBankrupt()) {
                     distributor.setFormerNrOfContracts(distributor.getFormerNrOfContracts() - 1);
                     distributor.setBudget(distributor.getBudget() - distributor.getProductionCost());
                     i.remove();
@@ -75,6 +84,7 @@ public class Contract {
 
     /**
      * function that initialises the simulation before any monthly changes are made
+     *
      * @param consumers
      * @param distributors
      * @return
@@ -112,11 +122,17 @@ public class Contract {
         return contracts;
     }
 
-
-
-    public static void renewContracts(List<Distributor> distributors,
-                                      List<Consumer> consumers,
-                                      List<Contract> contracts) {
+    /**
+     * renews all contracts or creates others after the monthly changes are made
+     *
+     * @param distributors
+     * @param consumers
+     * @param contracts
+     */
+    public static void renewContracts(final List<Distributor> distributors,
+                                      final List<Consumer> consumers,
+                                      final List<Contract> contracts) {
+        //the distributors each propose new prices based on their former contracts
         Distributor.createProposalsAllDistributors(distributors);
 
         // we assume that there's at least one distributor
@@ -130,9 +146,13 @@ public class Contract {
                 winnerDistributor = distributors.get(i);
             }
         }
+
+        //adds new contracts to the distributor with the lowest price(winnerDistributor)
+        // if that is the case
         int nrOfContracts = winnerDistributor.getNrOfContracts();
         for (Consumer consumer : consumers) {
             int distributorRevenue = 0;
+            //if we find a consumer with no contracts make them sign a new one
             if (!consumer.hasContract()) {
                 nrOfContracts++;
 
@@ -150,25 +170,43 @@ public class Contract {
         }
         winnerDistributor.setNrOfContracts(nrOfContracts);
 
+        //updates their former number of contracts for a next proposals since
+        //the actual number of contracts in the objects will change
         for (Distributor distributor : distributors) {
             distributor.setFormerNrOfContracts(distributor.getNrOfContracts());
         }
 
     }
 
-    public  static void dissolveContracts(List<Contract> contracts) {
-       Iterator<Contract> i = contracts.iterator();
-       while (i.hasNext()) {
-           Contract contract = i.next();
-           if (contract.isExpired()) {
-               i.remove();
-           }
-       }
+    /**
+     * dissolves expired contracts(removes them from the list)
+     *
+     * @param contracts
+     */
+    public static void dissolveContracts(final List<Contract> contracts) {
+        Iterator<Contract> i = contracts.iterator();
+        while (i.hasNext()) {
+            Contract contract = i.next();
+            if (contract.isExpired()) {
+                i.remove();
+            }
+        }
     }
 
-    public  static void dissolveContractsForDistributor(int distributorId, List<Distributor> distributors,
-                                                        List<Consumer> consumers,
-                                                        List<Contract> contracts) {
+    /**
+     * dissolves the contracts in which a distributor is signed
+     * and modifies the status of the signed consumers to false
+     * so they can sign a new contract next month
+     *
+     * @param distributorId
+     * @param distributors
+     * @param consumers
+     * @param contracts
+     */
+    public static void dissolveContractsForDistributor(final int distributorId,
+                                                       final List<Distributor> distributors,
+                                                       final List<Consumer> consumers,
+                                                       final List<Contract> contracts) {
         Iterator<Contract> contractIterator = contracts.iterator();
         while (contractIterator.hasNext()) {
             Contract contract = contractIterator.next();
@@ -182,10 +220,42 @@ public class Contract {
             }
         }
     }
+
+    /**
+     * applies the terms of a single contract
+     *
+     * @param consumer
+     * @param distributor
+     * @param delayedContracts
+     */
+    public void applyContract(final Consumer consumer, final Distributor distributor,
+                              final List<DelayedContract> delayedContracts) {
+        if (consumer.getBudget() - consumerTax < 0) {
+            //if consumer cannot pay it's end of the contract he creates a new
+            //delayedContract which keeps track of it's debt
+            delayedContracts.add(delayTax());
+        } else {
+            consumer.setBudget(consumer.getBudget() - consumerTax);
+            distributor.setBudget(distributor.getBudget() + consumerTax);
+        }
+        monthsLeft--;
+    }
+
+    /**
+     * factory method used to create delayed contracts
+     *
+     * @return
+     */
     public DelayedContract delayTax() {
         return new DelayedContract(consumerId, distributorId,
                 (int) Math.round(1.2 * consumerTax), distributorRevenue, 1);
     }
+
+    /**
+     * checks to see if contract is expired
+     *
+     * @return
+     */
     public boolean isExpired() {
         if (monthsLeft == 0) {
             return true;
@@ -193,24 +263,24 @@ public class Contract {
         return false;
     }
 
-    public int getConsumerTax() {
+    public final int getConsumerTax() {
         return consumerTax;
     }
 
-    public int getConsumerId() {
+    public final int getConsumerId() {
         return consumerId;
     }
 
-    public int getDistributorId() {
+    public final int getDistributorId() {
         return distributorId;
     }
 
-    public int getMonthsLeft() {
+    public final int getMonthsLeft() {
         return monthsLeft;
     }
 
     @Override
-    public String toString() {
+    public final String toString() {
         return "Contract{"
                 + "consumerId=" + consumerId
                 + ", distributorId=" + distributorId

@@ -4,7 +4,10 @@ import economics.Contract;
 
 import java.util.List;
 
-public class Distributor {
+/**
+ * holds data and methods for distributors
+ */
+public final class Distributor {
     private final int id;
     private final int contractLength;
     private int budget;
@@ -15,6 +18,15 @@ public class Distributor {
     private boolean bankruptStatus;
     private int formerNrOfContracts;
 
+    /**
+     * Creates and initialises a distributor according to parameters
+     *
+     * @param id
+     * @param contractLength
+     * @param budget
+     * @param infrastuctureCost
+     * @param productionCost
+     */
     public Distributor(final int id, final int contractLength, final int budget,
                        final int infrastuctureCost, final int productionCost) {
         this.id = id;
@@ -27,6 +39,7 @@ public class Distributor {
         this.contractPriceProposal = infrastuctureCost
                 + productionCost
                 + ((Long) Math.round(Math.floor(0.2 * productionCost))).intValue();
+        //no contracts signed yet
         this.nrOfContracts = 0;
         this.formerNrOfContracts = 0;
         this.bankruptStatus = false;
@@ -49,24 +62,24 @@ public class Distributor {
         return new Contract(consumerId, distributorId, contractPrice, revenue, contractLength);
     }
 
-    public static void createProposalsAllDistributors(List<Distributor> distributors) {
+    /**
+     * creates new price proposals for future contracts for all distributors
+     *
+     * @param distributors
+     */
+    public static void createProposalsAllDistributors(final List<Distributor> distributors) {
         for (Distributor distributor : distributors) {
             distributor.createNewPriceProposal();
         }
     }
 
-    public void createNewPriceProposal() {
-        if(formerNrOfContracts != 0) {
-            contractPriceProposal = (int) (Math.round(Math.floor(infrastuctureCost / formerNrOfContracts)
-                    + productionCost) + 0.2 * productionCost);
-        } else {
-            contractPriceProposal = infrastuctureCost
-                    + productionCost
-                    + ((Long) Math.round(Math.floor(0.2 * productionCost))).intValue();
-        }
-    }
-
-    public static void taxAllDistributors(List<Distributor> distributors) {
+    /**
+     * makes all distributors pay their taxes and marks them as bankrupt
+     * if they go below their budget
+     *
+     * @param distributors
+     */
+    public static void taxAllDistributors(final List<Distributor> distributors) {
         for (Distributor distributor : distributors) {
             if (distributor.getBudget() >= 0) {
                 distributor.payTax();
@@ -77,19 +90,45 @@ public class Distributor {
         }
     }
 
+    /**
+     * creates a new price proposal using various data;
+     * only the former number of contracts from last proposal
+     * is taken into account
+     */
+    public void createNewPriceProposal() {
+        if (formerNrOfContracts != 0) {
+            contractPriceProposal = (int) (Math.round(Math.floor(infrastuctureCost / formerNrOfContracts)
+                    + productionCost) + 0.2 * productionCost);
+        } else {
+            //if there were no contracts signed last in last proposal
+            contractPriceProposal = infrastuctureCost
+                    + productionCost
+                    + ((Long) Math.round(Math.floor(0.2 * productionCost))).intValue();
+        }
+    }
+
+    /**
+     * method for subtracting a distributor's taxes form their budget
+     */
     public void payTax() {
         budget -= infrastuctureCost + productionCost * formerNrOfContracts;
     }
 
     /**
      * check to see if distributor is bankrupt
+     *
      * @return
      */
     public boolean isBankrupt() {
         return bankruptStatus;
     }
 
-    public void setBankruptStatus(boolean status) {
+    /**
+     * sets the bankrupt status
+     *
+     * @param status
+     */
+    public void setBankruptStatus(final boolean status) {
         bankruptStatus = status;
     }
 
@@ -105,12 +144,16 @@ public class Distributor {
         return budget;
     }
 
-    public int getInfrastuctureCost() {
-        return infrastuctureCost;
+    public void setBudget(final int budget) {
+        this.budget = budget;
     }
 
     public int getProductionCost() {
         return productionCost;
+    }
+
+    public void setProductionCost(final int productionCost) {
+        this.productionCost = productionCost;
     }
 
     public int getContractPriceProposal() {
@@ -121,39 +164,26 @@ public class Distributor {
         return nrOfContracts;
     }
 
-    public void setBudget(int budget) {
-        this.budget = budget;
-    }
-
-    public void setInfrastuctureCost(int infrastuctureCost) {
-        this.infrastuctureCost = infrastuctureCost;
-    }
-
-    public void setProductionCost(int productionCost) {
-        this.productionCost = productionCost;
-    }
-
-    public void setContractPriceProposal(int contractPriceProposal) {
-        this.contractPriceProposal = contractPriceProposal;
-    }
-
-    public void setNrOfContracts(int nrOfContracts) {
+    public void setNrOfContracts(final int nrOfContracts) {
         this.nrOfContracts = nrOfContracts;
+    }
+
+    public void setInfrastuctureCost(final int infrastuctureCost) {
+        this.infrastuctureCost = infrastuctureCost;
     }
 
     public int getFormerNrOfContracts() {
         return formerNrOfContracts;
     }
 
-    public void setFormerNrOfContracts(int formerNrOfContracts) {
+    public void setFormerNrOfContracts(final int formerNrOfContracts) {
         this.formerNrOfContracts = formerNrOfContracts;
     }
 
     @Override
     public String toString() {
-        return "Distributor{" +
-                "id=" + id
-                + ", contractLength="
+        return "Distributor{" + "id="
+                + id + ", contractLength="
                 + contractLength + ", budget="
                 + budget + ", infrastuctureCost="
                 + infrastuctureCost + ", productionCost="

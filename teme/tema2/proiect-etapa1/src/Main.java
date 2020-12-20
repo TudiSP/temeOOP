@@ -1,6 +1,4 @@
-import Utils.Utils;
 import economics.Contract;
-import economics.DelayedContract;
 import economics.MonthlyUpdate;
 import entities.Consumer;
 import entities.Distributor;
@@ -8,7 +6,6 @@ import inputOutput.Input;
 import inputOutput.Output;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 public class Main {
@@ -18,7 +15,7 @@ public class Main {
         List<Consumer> consumers = new ArrayList<>();
         List<Distributor> distributors = new ArrayList<>();
         List<MonthlyUpdate> monthlyUpdates = new ArrayList<>();
-        int nrOfTurns;
+        final int nrOfTurns;
 
         //input data parsing
         nrOfTurns = Input.parseInputFromFile(args[0], consumers, distributors, monthlyUpdates);
@@ -30,7 +27,8 @@ public class Main {
         Simulation simulation = Simulation.getInstance();
         simulation.runSimulation(consumers, distributors, contracts, monthlyUpdates, nrOfTurns);
 
-        Output.writeToOutput(args[0], args[1], consumers, distributors, contracts);
+        //generate output and write it to file
+        Output.writeToOutput(args[1], consumers, distributors, contracts);
 
     }
 }

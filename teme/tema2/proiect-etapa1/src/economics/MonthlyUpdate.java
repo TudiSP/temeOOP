@@ -7,16 +7,32 @@ import entities.Distributor;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MonthlyUpdate {
+/**
+ * Class used to store data about monthly changes
+ * and holds methods for applying them
+ */
+public final class MonthlyUpdate {
     private List<Consumer> newConsumers;
     private List<CostChange> costChanges;
 
+    /**
+     * initialises a new monthly update with new lists
+     */
     public MonthlyUpdate() {
         newConsumers = new ArrayList<>();
         costChanges = new ArrayList<>();
     }
-    public void updateMonth(List<Distributor> distributors,
-                            List<Consumer> consumers, List<Consumer> allConsumers) {
+
+    /**
+     * applies monthly updates to entities
+     *
+     * @param distributors
+     * @param consumers
+     * @param allConsumers
+     */
+    public void updateMonth(final List<Distributor> distributors,
+                            final List<Consumer> consumers,
+                            final List<Consumer> allConsumers) {
         for (Consumer newConsumer : newConsumers) {
             consumers.add(newConsumer);
             allConsumers.add(newConsumer);
@@ -31,40 +47,23 @@ public class MonthlyUpdate {
         }
     }
 
-    public static void updateSimulation(List<Distributor> distributors,
-                                        List<Consumer> consumers,
-                                        List<MonthlyUpdate> monthlyUpdates,
-                                        List<Consumer> allConsumers) {
-        for (MonthlyUpdate monthlyUpdate : monthlyUpdates) {
-            monthlyUpdate.updateMonth(distributors, consumers, allConsumers);
-        }
-    }
-
     /**
      * add another new consumer to the newConsumer list
+     *
      * @param consumer
      */
-    public void addNewConsumer(Consumer consumer) {
+    public void addNewConsumer(final Consumer consumer) {
         newConsumers.add(consumer);
     }
 
     /**
      * add another costChange to the costChangeslist
+     *
      * @param costChange
      */
-    public void addCostChange(CostChange costChange) {
+    public void addCostChange(final CostChange costChange) {
         costChanges.add(costChange);
     }
-
-    public List<Consumer> getNewConsumers() {
-        return newConsumers;
-    }
-
-    public List<CostChange> getCostChanges() {
-        return costChanges;
-    }
-
-
 
     @Override
     public String toString() {

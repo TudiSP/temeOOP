@@ -2,9 +2,17 @@ package factories;
 
 import entities.Distributor;
 
-public class DistributorFactory {
+public final class DistributorFactory {
+
     /**
-     * creates and returns a new Distributor object based on params
+     * Utility class, therefore cannot be instantiated
+     */
+    private DistributorFactory() {
+    }
+
+    /**
+     * Factory method for creating a new distributor
+     *
      * @param id
      * @param contractLength
      * @param budget

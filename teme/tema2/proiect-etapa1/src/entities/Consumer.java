@@ -2,27 +2,45 @@ package entities;
 
 import java.util.List;
 
-public class Consumer {
+/**
+ * holds data and methods for consumers
+ */
+public final class Consumer {
     private final int id;
-    private int budget;
     private final int income;
+    private int budget;
     private boolean contractStatus;
     private boolean bankruptStatus;
-    private boolean debtStatus;
 
-
+    /**
+     * Creates and initialises a consumer according to parameters
+     *
+     * @param id
+     * @param initialBudget
+     * @param income
+     */
     public Consumer(final int id, final int initialBudget, final int income) {
         this.id = id;
         this.budget = initialBudget;
         this.income = income;
         this.contractStatus = false;
         this.bankruptStatus = false;
-        this.debtStatus = false;
     }
 
+    /**
+     * adds each consumer's monthly income to their budget
+     *
+     * @param consumers
+     */
+    public static void payAllConsumers(final List<Consumer> consumers) {
+        for (Consumer consumer : consumers) {
+            consumer.getPaid();
+        }
+    }
 
     /**
      * checks to see if a consumer has gone bankrupt
+     *
      * @return
      */
     public boolean isBankrupt() {
@@ -30,27 +48,17 @@ public class Consumer {
     }
 
     /**
-     * checks to see if a consumer is in debt
-     * @return
-     */
-    public boolean isInDebt() {
-        return debtStatus;
-    }
-
-    /**
      * Checks to see if a consumer already has a contract or not
+     *
      * @return
      */
     public boolean hasContract() {
         return contractStatus;
     }
 
-    public static void payAllConsumers(List<Consumer> consumers) {
-        for (Consumer consumer : consumers) {
-            consumer.getPaid();
-        }
-    }
-
+    /**
+     * method that adds a consumers monthly income to their budget
+     */
     public void getPaid() {
         budget += income;
     }
@@ -63,30 +71,27 @@ public class Consumer {
         return budget;
     }
 
-    public void setBudget(int budget) {
+    public void setBudget(final int budget) {
         this.budget = budget;
     }
 
-    public int getIncome() {
-        return income;
-    }
-
     /**
-     * Modifies the value of contract(true or false)
+     * Modifies the value of contractStatus(true or false)
+     *
      * @param status
      */
-    public void setContractStatus(boolean status) {
+    public void setContractStatus(final boolean status) {
         contractStatus = status;
     }
 
-    public void setBankruptStatus(boolean status) {
+    /**
+     * Modifies the value of bankruptStatus(true or false)
+     *
+     * @param status
+     */
+    public void setBankruptStatus(final boolean status) {
         bankruptStatus = status;
     }
-
-    public void setDebtStatus(boolean status) {
-        debtStatus = status;
-    }
-
 
     @Override
     public String toString() {
@@ -97,6 +102,4 @@ public class Consumer {
                 + ", isBankrupt=" + isBankrupt()
                 + '}';
     }
-
-
 }

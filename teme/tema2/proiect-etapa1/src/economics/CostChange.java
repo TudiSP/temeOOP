@@ -1,13 +1,17 @@
 package economics;
 
-public class CostChange {
+/**
+ * Class used to store data about cost changes
+ */
+public final class CostChange {
     private final int id;
     private final int infrastuctureCost;
     private final int productionCost;
 
     /**
      * holds the monthly cost changes for distributors
-     * @param id distributor id
+     *
+     * @param id                distributor id
      * @param infrastuctureCost
      * @param productionCost
      */
