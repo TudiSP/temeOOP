@@ -17,12 +17,13 @@ public final class DistributorFactory {
      * @param contractLength
      * @param budget
      * @param infrastuctureCost
-     * @param productionCost
      * @return
      */
     public static Distributor createDistributor(final int id, final int contractLength,
                                                 final int budget, final int infrastuctureCost,
-                                                final int productionCost) {
-        return new Distributor(id, contractLength, budget, infrastuctureCost, productionCost);
+                                                final int energyNeededKW,
+                                                final String producerStrategy) {
+        return new Distributor(id, contractLength, budget, infrastuctureCost,
+                energyNeededKW, producerStrategy);
     }
 }

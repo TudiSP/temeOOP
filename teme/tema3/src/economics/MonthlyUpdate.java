@@ -3,6 +3,7 @@ package economics;
 import Utils.Utils;
 import entities.Consumer;
 import entities.Distributor;
+import entities.Producer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,14 +14,16 @@ import java.util.List;
  */
 public final class MonthlyUpdate {
     private List<Consumer> newConsumers;
-    private List<CostChange> costChanges;
+    private List<DistributorChange> distributorChanges;
+    private List<ProducerChange> producerChanges;
 
     /**
      * initialises a new monthly update with new lists
      */
     public MonthlyUpdate() {
         newConsumers = new ArrayList<>();
-        costChanges = new ArrayList<>();
+        distributorChanges = new ArrayList<>();
+        producerChanges = new ArrayList<>();
     }
 
     /**
@@ -31,6 +34,7 @@ public final class MonthlyUpdate {
      * @param allConsumers
      */
     public void updateMonth(final List<Distributor> distributors,
+                            final List<Producer> producers,
                             final List<Consumer> consumers,
                             final List<Consumer> allConsumers) {
         for (Consumer newConsumer : newConsumers) {
@@ -38,12 +42,18 @@ public final class MonthlyUpdate {
             allConsumers.add(newConsumer);
         }
 
-        for (CostChange costChange : costChanges) {
+        for (DistributorChange distributorChange : distributorChanges) {
             Distributor distributor = Utils
-                    .idToDistributorSearch(distributors, costChange.getId());
+                    .idToDistributorSearch(distributors, distributorChange.getId());
 
-            distributor.setInfrastuctureCost(costChange.getInfrastuctureCost());
-            distributor.setProductionCost(costChange.getProductionCost());
+            distributor.setInfrastuctureCost(distributorChange.getInfrastuctureCost());
+        }
+
+        for (ProducerChange producerChange : producerChanges) {
+            Producer producer = Utils
+                    .idToProducerSearch(producers, producerChange.getId());
+
+            producer.setEnergyPerDistributor(producerChange.getEnergyPerDistributor());
         }
     }
 
@@ -57,19 +67,27 @@ public final class MonthlyUpdate {
     }
 
     /**
-     * add another costChange to the costChangeslist
+     * add another distributorChange to the distributorChanges list
      *
-     * @param costChange
+     * @param distributorChange
      */
-    public void addCostChange(final CostChange costChange) {
-        costChanges.add(costChange);
+    public void addDistributorChange(final DistributorChange distributorChange) {
+        distributorChanges.add(distributorChange);
+    }
+
+    /**
+     * add another producerChange to the producerChanges list
+     * @param producerChange
+     */
+    public void addProducerChange(final ProducerChange producerChange) {
+        producerChanges.add(producerChange);
     }
 
     @Override
     public String toString() {
         return "MonthlyUpdate{"
                 + "newConsumers=" + newConsumers.toString()
-                + ", costChanges=" + costChanges.toString()
+                + ", costChanges=" + distributorChanges.toString()
                 + '}';
     }
 }

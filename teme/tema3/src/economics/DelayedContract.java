@@ -74,12 +74,25 @@ public final class DelayedContract extends Contract {
     public void applyDelay(final Consumer consumer,
                            final Distributor distributor,
                            final Contract contract) {
-        if (consumer.getBudget() - consumerTax - contract.consumerTax < 0) {
-            //consumer goes bankrupt if he can't pay all his taxes(this debt and his current tax)
-            consumer.setBankruptStatus(true);
+        //if consumer has a contract with the same distributor
+        if (contract.distributorId == distributorId) {
+            if (consumer.getBudget() - consumerTax - contract.consumerTax < 0) {
+                //consumer goes bankrupt if he can't pay all his taxes(this debt and his current tax)
+                consumer.setBankruptStatus(true);
+            } else {
+                consumer.setBudget(consumer.getBudget() - consumerTax);
+                distributor.setBudget(distributor.getBudget() + consumerTax);
+            }
+            //else consumer has a contract with a new distributor
         } else {
-            consumer.setBudget(consumer.getBudget() - consumerTax);
-            distributor.setBudget(distributor.getBudget() + consumerTax);
+            //he has to pay only his debt
+            if (consumer.getBudget() - consumerTax < 0) {
+                //consumer goes bankrupt if he can't pay only his debt
+                consumer.setBankruptStatus(true);
+            } else {
+                consumer.setBudget(consumer.getBudget() - consumerTax);
+                distributor.setBudget(distributor.getBudget() + consumerTax);
+            }
         }
         monthsLeft--;
     }

@@ -3,6 +3,7 @@ import economics.DelayedContract;
 import economics.MonthlyUpdate;
 import entities.Consumer;
 import entities.Distributor;
+import entities.Producer;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -45,6 +46,7 @@ public final class Simulation {
      */
     public void runSimulation(final List<Consumer> consumers,
                               final List<Distributor> distributors,
+                              final List<Producer> producers,
                               final List<Contract> contracts,
                               final List<MonthlyUpdate> monthlyUpdates,
                               final int nrOfTurns) {
@@ -66,7 +68,7 @@ public final class Simulation {
             Contract.dissolveContracts(contracts);
 
             //make changes for the month
-            monthlyUpdates.get(i).updateMonth(distributors, eligibleConsumers, consumers);
+            monthlyUpdates.get(i).updateMonth(distributors, producers,  eligibleConsumers, consumers);
             Consumer.payAllConsumers(eligibleConsumers);
             Contract.renewContracts(eligibleDistributors, eligibleConsumers, contracts);
 
@@ -79,7 +81,7 @@ public final class Simulation {
             //tax distributors monthly
             Distributor.taxAllDistributors(eligibleDistributors);
 
-            //remove bankrupt customers from simulation
+            //remove bankrupt consumers from simulation
             Iterator<Consumer> consumerIterator = eligibleConsumers.iterator();
             while (consumerIterator.hasNext()) {
                 Consumer consumer = consumerIterator.next();

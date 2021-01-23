@@ -3,6 +3,7 @@ package Utils;
 import economics.Contract;
 import entities.Consumer;
 import entities.Distributor;
+import entities.Producer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -83,6 +84,17 @@ public class Utils {
         for (Distributor distributor : distributors) {
             if (distributor.getId() == id) {
                 return distributor;
+            }
+        }
+        throw new IllegalStateException("no Distributor by that id found.");
+    }
+
+    public static Producer idToProducerSearch(final List<Producer> producers,
+                                                 final int id) throws IllegalStateException {
+
+        for (Producer producer : producers) {
+            if (producer.getId() == id) {
+                return producer;
             }
         }
         throw new IllegalStateException("no Distributor by that id found.");

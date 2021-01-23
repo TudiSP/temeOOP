@@ -1,6 +1,7 @@
 package entities;
 
 import economics.Contract;
+import strategies.EnergyChoiceStrategyType;
 
 import java.util.List;
 
@@ -17,23 +18,33 @@ public final class Distributor {
     private int nrOfContracts;
     private boolean bankruptStatus;
     private int formerNrOfContracts;
+    private final int energyNeededKW;
+    private final EnergyChoiceStrategyType producerStrategy;
 
     /**
      * Creates and initialises a distributor according to parameters
-     *
-     * @param id
+     *  @param id
      * @param contractLength
      * @param budget
      * @param infrastuctureCost
      * @param productionCost
+     * @param energyNeededKW
+     * @param producerStrategy
      */
     public Distributor(final int id, final int contractLength, final int budget,
-                       final int infrastuctureCost, final int productionCost) {
+                       final int infrastuctureCost, final int energyNeededKW,
+                       final String producerStrategy) {
         this.id = id;
         this.contractLength = contractLength;
         this.budget = budget;
         this.infrastuctureCost = infrastuctureCost;
-        this.productionCost = productionCost;
+        this.productionCost = 0; //modify with Producer
+        this.energyNeededKW = energyNeededKW;
+        switch (producerStrategy) {
+            case "GREEN" -> this.producerStrategy = EnergyChoiceStrategyType.GREEN;
+            case "PRICE" -> this.producerStrategy = EnergyChoiceStrategyType.PRICE;
+            default -> this.producerStrategy = EnergyChoiceStrategyType.QUANTITY;
+        }
         //we initialise the contractPriceProposal considering that
         //a new distributor doesn't have customers from the start
         this.contractPriceProposal = infrastuctureCost
@@ -111,7 +122,7 @@ public final class Distributor {
      * method for subtracting a distributor's taxes form their budget
      */
     public void payTax() {
-        budget -= infrastuctureCost + productionCost * formerNrOfContracts;
+       budget -= infrastuctureCost + productionCost * formerNrOfContracts;
     }
 
     /**
