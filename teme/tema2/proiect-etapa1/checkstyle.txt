@@ -1,0 +1,22 @@
+Starting audit...
+[ERROR] /home/tudi/Programe/universityStuff/OOP/temeOOP/teme/tema2/proiect-etapa1/./src/inputOutput/Output.java:1:9: Name 'inputOutput' must match pattern '^[a-z]+(\.[a-zA-Z_][a-zA-Z0-9_]*)*$'. [PackageName]
+[ERROR] /home/tudi/Programe/universityStuff/OOP/temeOOP/teme/tema2/proiect-etapa1/./src/inputOutput/Output.java:93:20: 'output' hides a field. [HiddenField]
+[ERROR] /home/tudi/Programe/universityStuff/OOP/temeOOP/teme/tema2/proiect-etapa1/./src/inputOutput/Input.java:1:9: Name 'inputOutput' must match pattern '^[a-z]+(\.[a-zA-Z_][a-zA-Z0-9_]*)*$'. [PackageName]
+[ERROR] /home/tudi/Programe/universityStuff/OOP/temeOOP/teme/tema2/proiect-etapa1/./src/economics/Contract.java:61: Line is longer than 100 characters (found 104). [LineLength]
+[ERROR] /home/tudi/Programe/universityStuff/OOP/temeOOP/teme/tema2/proiect-etapa1/./src/economics/Contract.java:76: Line is longer than 100 characters (found 101). [LineLength]
+[ERROR] /home/tudi/Programe/universityStuff/OOP/temeOOP/teme/tema2/proiect-etapa1/./src/economics/Contract.java:108:68: '0.2' is a magic number. [MagicNumber]
+[ERROR] /home/tudi/Programe/universityStuff/OOP/temeOOP/teme/tema2/proiect-etapa1/./src/economics/Contract.java:159:68: '0.2' is a magic number. [MagicNumber]
+[ERROR] /home/tudi/Programe/universityStuff/OOP/temeOOP/teme/tema2/proiect-etapa1/./src/economics/Contract.java:166: Line is longer than 100 characters (found 101). [LineLength]
+[ERROR] /home/tudi/Programe/universityStuff/OOP/temeOOP/teme/tema2/proiect-etapa1/./src/economics/Contract.java:251:34: '1.2' is a magic number. [MagicNumber]
+[ERROR] /home/tudi/Programe/universityStuff/OOP/temeOOP/teme/tema2/proiect-etapa1/./src/Test.java:9:28: Using the '.*' form of import should be avoided - java.util.concurrent.*. [AvoidStarImport]
+[ERROR] /home/tudi/Programe/universityStuff/OOP/temeOOP/teme/tema2/proiect-etapa1/./src/entities/Distributor.java:41:49: '0.2' is a magic number. [MagicNumber]
+[ERROR] /home/tudi/Programe/universityStuff/OOP/temeOOP/teme/tema2/proiect-etapa1/./src/entities/Distributor.java:100: Line is longer than 100 characters (found 105). [LineLength]
+[ERROR] /home/tudi/Programe/universityStuff/OOP/temeOOP/teme/tema2/proiect-etapa1/./src/entities/Distributor.java:101:41: '0.2' is a magic number. [MagicNumber]
+[ERROR] /home/tudi/Programe/universityStuff/OOP/temeOOP/teme/tema2/proiect-etapa1/./src/entities/Distributor.java:106:53: '0.2' is a magic number. [MagicNumber]
+[ERROR] /home/tudi/Programe/universityStuff/OOP/temeOOP/teme/tema2/proiect-etapa1/./src/Utils/Utils.java:1:9: Name 'Utils' must match pattern '^[a-z]+(\.[a-zA-Z_][a-zA-Z0-9_]*)*$'. [PackageName]
+[ERROR] /home/tudi/Programe/universityStuff/OOP/temeOOP/teme/tema2/proiect-etapa1/./src/Utils/Utils.java:13:1: Utility classes should not have a public or default constructor. [HideUtilityClassConstructor]
+[ERROR] /home/tudi/Programe/universityStuff/OOP/temeOOP/teme/tema2/proiect-etapa1/./src/Main.java:11:1: Utility classes should not have a public or default constructor. [HideUtilityClassConstructor]
+[ERROR] /home/tudi/Programe/universityStuff/OOP/temeOOP/teme/tema2/proiect-etapa1/./src/Main.java:13:5: Missing a Javadoc comment. [MissingJavadocMethod]
+[ERROR] /home/tudi/Programe/universityStuff/OOP/temeOOP/teme/tema2/proiect-etapa1/./src/Main.java:13:29: Parameter args should be final. [FinalParameters]
+Audit done.
+Checkstyle ends with 19 errors.
