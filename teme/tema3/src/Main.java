@@ -1,3 +1,4 @@
+import Utils.Utils;
 import economics.Contract;
 import economics.MonthlyUpdate;
 import entities.Consumer;
@@ -23,21 +24,18 @@ public class Main {
         nrOfTurns = Input.parseInputFromFile(args[0], consumers, distributors,
                 producers, monthlyUpdates);
 
-        //initialise the simulation by making first contracts
-        List<Contract> contracts = Contract.initialiseContracts(consumers, distributors);
+        //sort producers by id
+        Utils.sortProducersById(producers);
 
-        for (Consumer consumer : consumers) {
-            System.out.println(consumer.toString());
-        }
-        for (Producer producer : producers) {
-            System.out.println(producer.toString());
-        }
+        List<Contract> contracts = new ArrayList<>();
+
         //Create and run the simulation
         Simulation simulation = Simulation.getInstance();
         simulation.runSimulation(consumers, distributors, producers, contracts, monthlyUpdates, nrOfTurns);
 
+
         //generate output and write it to file
-        Output.writeToOutput(args[1], consumers, distributors, contracts);
+        Output.writeToOutput(args[1], consumers, distributors, producers, contracts);
 
     }
 }

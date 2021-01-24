@@ -4,8 +4,10 @@ import Utils.Utils;
 import economics.Contract;
 import entities.Consumer;
 import entities.Distributor;
+import entities.Producer;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import statistics.MonthlyStats;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -50,7 +52,9 @@ public final class Output {
     public static void writeToOutput(final String outputPath,
                                      final List<Consumer> consumers,
                                      final List<Distributor> distributors,
+                                     final List<Producer> producers,
                                      final List<Contract> contracts) throws IOException {
+
 
         //create the consumer json array
         JSONArray consumerArrayJson = new JSONArray();
@@ -70,7 +74,10 @@ public final class Output {
                     .distributorIdToContractSearch(contracts, distributor.getId());
 
             distributorJson.put("id", distributor.getId());
+            distributorJson.put("energyNeededKW", distributor.getEnergyNeededKW());
+            distributorJson.put("contractCost", distributor.getContractPriceProposal());
             distributorJson.put("budget", distributor.getBudget());
+            distributorJson.put("producerStrategy", distributor.getProducerStrategy().getLabel());
             distributorJson.put("isBankrupt", distributor.isBankrupt());
 
             JSONArray distributorContractsJson = new JSONArray();
@@ -89,10 +96,36 @@ public final class Output {
             distributorArrayJson.add(distributorJson);
         }
 
+        JSONArray producerArrayJson = new JSONArray();
+        for (Producer producer : producers) {
+            JSONObject producerJson = new JSONObject();
+
+            producerJson.put("id", producer.getId());
+            producerJson.put("maxDistributors", producer.getMaxDistributors());
+            producerJson.put("priceKW", producer.getPriceKW());
+            producerJson.put("energyType", producer.getEnergyType().getLabel());
+            producerJson.put("energyPerDistributor", producer.getEnergyPerDistributor());
+
+
+            JSONArray producerMonthlyStatsJson = new JSONArray();
+            if (producer.getMonthlyStats() != null) {
+                for (MonthlyStats monthlyStats : producer.getMonthlyStats()) {
+                    JSONObject monthlyStatsJson = new JSONObject();
+
+                    monthlyStatsJson.put("month", monthlyStats.getMonth());
+                    monthlyStatsJson.put("distributorsIds", monthlyStats.getDistributorIds());
+                    producerMonthlyStatsJson.add(monthlyStatsJson);
+                }
+            }
+            producerJson.put("monthlyStats", producerMonthlyStatsJson);
+            producerArrayJson.add(producerJson);
+        }
+
         //assemble final json object
         JSONObject output = new JSONObject();
         output.put("consumers", consumerArrayJson);
         output.put("distributors", distributorArrayJson);
+        output.put("energyProducers", producerArrayJson);
 
         //write final json object to file
         FileWriter fileWriter = new FileWriter(outputPath);

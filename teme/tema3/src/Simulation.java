@@ -47,7 +47,7 @@ public final class Simulation {
     public void runSimulation(final List<Consumer> consumers,
                               final List<Distributor> distributors,
                               final List<Producer> producers,
-                              final List<Contract> contracts,
+                              List<Contract> contracts,
                               final List<MonthlyUpdate> monthlyUpdates,
                               final int nrOfTurns) {
         List<DelayedContract> delayedContracts = new ArrayList<>();
@@ -57,6 +57,9 @@ public final class Simulation {
         List<Distributor> eligibleDistributors = new ArrayList<>(distributors);
 
         //turn 0 of the simulation
+        Distributor.chooseProducersAndCalculateProductionCosts(distributors, producers);
+        Distributor.createProposalsAllDistributors(distributors);
+        contracts.addAll(Contract.initialiseContracts(consumers, distributors));
         Consumer.payAllConsumers(eligibleConsumers);
         Contract.applyContracts(eligibleConsumers, eligibleDistributors,
                 contracts, delayedContracts);
@@ -81,6 +84,8 @@ public final class Simulation {
             //tax distributors monthly
             Distributor.taxAllDistributors(eligibleDistributors);
 
+            Distributor.chooseProducersAndCalculateProductionCosts(distributors, producers);
+
             //remove bankrupt consumers from simulation
             Iterator<Consumer> consumerIterator = eligibleConsumers.iterator();
             while (consumerIterator.hasNext()) {
@@ -102,7 +107,8 @@ public final class Simulation {
                     distributorIterator.remove();
                 }
             }
+            Producer.addMonthlyStatsAll(producers, i + 1);
         }
-
     }
+
 }

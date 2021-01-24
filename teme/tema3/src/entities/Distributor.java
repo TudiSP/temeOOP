@@ -1,9 +1,11 @@
 package entities;
 
 import economics.Contract;
-import strategies.EnergyChoiceStrategyType;
+import strategies.*;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * holds data and methods for distributors
@@ -13,13 +15,16 @@ public final class Distributor {
     private final int contractLength;
     private int budget;
     private int infrastuctureCost;
+    // key = producer id
+    // value = producer cost
+    private Map<Integer, Double> producerCosts;
     private int productionCost;
     private int contractPriceProposal;
     private int nrOfContracts;
     private boolean bankruptStatus;
     private int formerNrOfContracts;
     private final int energyNeededKW;
-    private final EnergyChoiceStrategyType producerStrategy;
+    private final DistributorStrategy producerStrategy;
 
     /**
      * Creates and initialises a distributor according to parameters
@@ -27,7 +32,6 @@ public final class Distributor {
      * @param contractLength
      * @param budget
      * @param infrastuctureCost
-     * @param productionCost
      * @param energyNeededKW
      * @param producerStrategy
      */
@@ -38,22 +42,38 @@ public final class Distributor {
         this.contractLength = contractLength;
         this.budget = budget;
         this.infrastuctureCost = infrastuctureCost;
-        this.productionCost = 0; //modify with Producer
         this.energyNeededKW = energyNeededKW;
         switch (producerStrategy) {
-            case "GREEN" -> this.producerStrategy = EnergyChoiceStrategyType.GREEN;
-            case "PRICE" -> this.producerStrategy = EnergyChoiceStrategyType.PRICE;
-            default -> this.producerStrategy = EnergyChoiceStrategyType.QUANTITY;
+            case "GREEN" -> this.producerStrategy = new GreenStrategy();
+            case "PRICE" -> this.producerStrategy = new PriceStrategy();
+            default -> this.producerStrategy = new QuantityStrategy();
         }
         //we initialise the contractPriceProposal considering that
         //a new distributor doesn't have customers from the start
-        this.contractPriceProposal = infrastuctureCost
-                + productionCost
-                + ((Long) Math.round(Math.floor(0.2 * productionCost))).intValue();
         //no contracts signed yet
         this.nrOfContracts = 0;
         this.formerNrOfContracts = 0;
         this.bankruptStatus = false;
+    }
+
+    /**
+     * Method to be used at each round of simulation to choose producers
+     * and calculate production costs for all distributors
+     * @param distributors
+     * @param producers
+     */
+    public static void chooseProducersAndCalculateProductionCosts
+                        (List<Distributor> distributors, List<Producer> producers) {
+        for (Producer producer : producers) {
+            producer.setObserverDistributors(new ArrayList<>());
+        }
+        for (Distributor distributor : distributors) {
+            // choose the producers
+            distributor.setProducerCosts(distributor
+                    .getProducerStrategy().chooseProducers(distributor, producers));
+            // calculate the production cost
+            distributor.calculateProductionCost();
+        }
     }
 
     /**
@@ -71,6 +91,27 @@ public final class Distributor {
                                           final int contractPrice, final int revenue,
                                           final int contractLength) {
         return new Contract(consumerId, distributorId, contractPrice, revenue, contractLength);
+    }
+
+    /**
+     * update observer with new data
+     * @param id
+     * @param newCost
+     */
+    public void update(final int id, final double newCost) {
+        producerCosts.put(id, newCost);
+        calculateProductionCost();
+    }
+
+    /**
+     * calculate the production cost based on producers costs
+     */
+    public void calculateProductionCost() {
+        Double totalCost = 0.0;
+        for (Map.Entry<Integer, Double> cost : producerCosts.entrySet()) {
+            totalCost += cost.getValue();
+        }
+        setProductionCost(((Long) Math.round(Math.floor(totalCost / 10))).intValue());
     }
 
     /**
@@ -112,9 +153,8 @@ public final class Distributor {
                     + productionCost) + 0.2 * productionCost);
         } else {
             //if there were no contracts signed last in last proposal
-            contractPriceProposal = infrastuctureCost
-                    + productionCost
-                    + ((Long) Math.round(Math.floor(0.2 * productionCost))).intValue();
+            contractPriceProposal = (infrastuctureCost + productionCost
+                    + ((Long) Math.round(Math.floor(0.2 * productionCost))).intValue());
         }
     }
 
@@ -190,6 +230,24 @@ public final class Distributor {
     public void setFormerNrOfContracts(final int formerNrOfContracts) {
         this.formerNrOfContracts = formerNrOfContracts;
     }
+
+    public Map<Integer, Double> getProducerCosts() {
+        return producerCosts;
+    }
+
+    public void setProducerCosts(Map<Integer, Double> producerCosts) {
+        this.producerCosts = producerCosts;
+    }
+
+    public int getEnergyNeededKW() {
+        return energyNeededKW;
+    }
+
+    public DistributorStrategy getProducerStrategy() {
+        return producerStrategy;
+    }
+
+
 
     @Override
     public String toString() {

@@ -89,6 +89,13 @@ public class Utils {
         throw new IllegalStateException("no Distributor by that id found.");
     }
 
+    /**
+     * searches and returns a producer based on an id
+     * @param producers
+     * @param id
+     * @return
+     * @throws IllegalStateException
+     */
     public static Producer idToProducerSearch(final List<Producer> producers,
                                                  final int id) throws IllegalStateException {
 
@@ -97,6 +104,19 @@ public class Utils {
                 return producer;
             }
         }
-        throw new IllegalStateException("no Distributor by that id found.");
+        throw new IllegalStateException("no producer by that id found.");
+    }
+
+    public static void sortProducersById(final List<Producer> producers) {
+        for (int i = 0; i < producers.size() - 1; i++) {
+            for (int j = i + 1; j < producers.size(); j++) {
+                if (producers.get(i).getId() > producers.get(j).getId()) {
+                    Producer aux = producers.get(i);
+                    producers.set(i, producers.get(j));
+                    producers.set(j, aux);
+                }
+            }
+        }
+
     }
 }
