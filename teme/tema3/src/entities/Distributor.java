@@ -1,7 +1,11 @@
 package entities;
 
+import Utils.Utils;
 import economics.Contract;
-import strategies.*;
+import strategies.DistributorStrategy;
+import strategies.GreenStrategy;
+import strategies.PriceStrategy;
+import strategies.QuantityStrategy;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +17,8 @@ import java.util.Map;
 public final class Distributor {
     private final int id;
     private final int contractLength;
+    private final int energyNeededKW;
+    private final DistributorStrategy producerStrategy;
     private int budget;
     private int infrastuctureCost;
     // key = producer id
@@ -23,12 +29,11 @@ public final class Distributor {
     private int nrOfContracts;
     private boolean bankruptStatus;
     private int formerNrOfContracts;
-    private final int energyNeededKW;
-    private final DistributorStrategy producerStrategy;
 
     /**
      * Creates and initialises a distributor according to parameters
-     *  @param id
+     *
+     * @param id
      * @param contractLength
      * @param budget
      * @param infrastuctureCost
@@ -57,13 +62,15 @@ public final class Distributor {
     }
 
     /**
-     * Method to be used at each round of simulation to choose producers
+     * Method to be used at round 0 of simulation to choose producers
      * and calculate production costs for all distributors
+     *
      * @param distributors
      * @param producers
      */
-    public static void chooseProducersAndCalculateProductionCosts
-                        (List<Distributor> distributors, List<Producer> producers) {
+    public static void chooseProducersAndCalculateProductionCostsAll
+    (final List<Distributor> distributors,
+     final List<Producer> producers) {
         for (Producer producer : producers) {
             producer.setObserverDistributors(new ArrayList<>());
         }
@@ -74,6 +81,22 @@ public final class Distributor {
             // calculate the production cost
             distributor.calculateProductionCost();
         }
+    }
+
+    /**
+     * method to be used each month for every distributor affected by
+     * their producers monthly changes
+     *
+     * @param distributor
+     * @param producers
+     */
+    public static void updateStrategiesAndRecalculateProductionCosts
+    (final Distributor distributor, final List<Producer> producers) {
+        // choose the producers
+        distributor.setProducerCosts(distributor
+                .getProducerStrategy().chooseProducers(distributor, producers));
+        // calculate the production cost
+        distributor.calculateProductionCost();
     }
 
     /**
@@ -91,27 +114,6 @@ public final class Distributor {
                                           final int contractPrice, final int revenue,
                                           final int contractLength) {
         return new Contract(consumerId, distributorId, contractPrice, revenue, contractLength);
-    }
-
-    /**
-     * update observer with new data
-     * @param id
-     * @param newCost
-     */
-    public void update(final int id, final double newCost) {
-        producerCosts.put(id, newCost);
-        calculateProductionCost();
-    }
-
-    /**
-     * calculate the production cost based on producers costs
-     */
-    public void calculateProductionCost() {
-        Double totalCost = 0.0;
-        for (Map.Entry<Integer, Double> cost : producerCosts.entrySet()) {
-            totalCost += cost.getValue();
-        }
-        setProductionCost(((Long) Math.round(Math.floor(totalCost / 10))).intValue());
     }
 
     /**
@@ -143,13 +145,37 @@ public final class Distributor {
     }
 
     /**
+     * update observer with new data, recalculate strategies
+     *
+     * @param distributor
+     * @param producers
+     */
+    public void update(final Distributor distributor,
+                       final List<Producer> producers) {
+        Utils.purgeDistributorFromObserverLists(distributor, producers);
+        Distributor.updateStrategiesAndRecalculateProductionCosts(distributor, producers);
+    }
+
+    /**
+     * calculate the production cost based on producers costs
+     */
+    public void calculateProductionCost() {
+        Double totalCost = 0.0;
+        for (Map.Entry<Integer, Double> cost : producerCosts.entrySet()) {
+            totalCost += cost.getValue();
+        }
+        setProductionCost(((Long) Math.round(Math.floor(totalCost / 10))).intValue());
+    }
+
+    /**
      * creates a new price proposal using various data;
      * only the former number of contracts from last proposal
      * is taken into account
      */
     public void createNewPriceProposal() {
         if (formerNrOfContracts != 0) {
-            contractPriceProposal = (int) (Math.round(Math.floor(infrastuctureCost / formerNrOfContracts)
+            contractPriceProposal = (int) (Math.round(Math.floor(infrastuctureCost
+                    / formerNrOfContracts)
                     + productionCost) + 0.2 * productionCost);
         } else {
             //if there were no contracts signed last in last proposal
@@ -162,7 +188,7 @@ public final class Distributor {
      * method for subtracting a distributor's taxes form their budget
      */
     public void payTax() {
-       budget -= infrastuctureCost + productionCost * formerNrOfContracts;
+        budget -= infrastuctureCost + productionCost * formerNrOfContracts;
     }
 
     /**
@@ -246,7 +272,6 @@ public final class Distributor {
     public DistributorStrategy getProducerStrategy() {
         return producerStrategy;
     }
-
 
 
     @Override

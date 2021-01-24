@@ -1,3 +1,4 @@
+import Utils.Utils;
 import economics.Contract;
 import economics.DelayedContract;
 import economics.MonthlyUpdate;
@@ -57,7 +58,7 @@ public final class Simulation {
         List<Distributor> eligibleDistributors = new ArrayList<>(distributors);
 
         //turn 0 of the simulation
-        Distributor.chooseProducersAndCalculateProductionCosts(distributors, producers);
+        Distributor.chooseProducersAndCalculateProductionCostsAll(distributors, producers);
         Distributor.createProposalsAllDistributors(distributors);
         contracts.addAll(Contract.initialiseContracts(consumers, distributors));
         Consumer.payAllConsumers(eligibleConsumers);
@@ -71,7 +72,8 @@ public final class Simulation {
             Contract.dissolveContracts(contracts);
 
             //make changes for the month
-            monthlyUpdates.get(i).updateMonth(distributors, producers,  eligibleConsumers, consumers);
+            monthlyUpdates.get(i).updateMonth(distributors, producers,
+                    eligibleConsumers, consumers);
             Consumer.payAllConsumers(eligibleConsumers);
             Contract.renewContracts(eligibleDistributors, eligibleConsumers, contracts);
 
@@ -84,7 +86,8 @@ public final class Simulation {
             //tax distributors monthly
             Distributor.taxAllDistributors(eligibleDistributors);
 
-            Distributor.chooseProducersAndCalculateProductionCosts(distributors, producers);
+            Utils.sortProducersById(producers);
+            Producer.notifyMonthlyChangeAll(distributors, producers);
 
             //remove bankrupt consumers from simulation
             Iterator<Consumer> consumerIterator = eligibleConsumers.iterator();

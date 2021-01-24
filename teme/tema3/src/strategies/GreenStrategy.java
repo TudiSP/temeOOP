@@ -3,19 +3,26 @@ package strategies;
 import entities.Distributor;
 import entities.Producer;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-public final class GreenStrategy implements DistributorStrategy{
+public final class GreenStrategy implements DistributorStrategy {
     private final String label = "GREEN";
+
     /**
      * Green strategy constructor
      */
-    public GreenStrategy() {}
+    public GreenStrategy() {
+    }
 
     /**
      * Green strategy implementation, prioritises renewable energy,
      * price and quantity in that order. Works by sorting the producers
      * list and then choosing them in the sorted order.
+     *
      * @param distributor
      * @param producers
      * @return a Map of producers id and their costs
@@ -29,24 +36,7 @@ public final class GreenStrategy implements DistributorStrategy{
         greenSortedList.sort(new Comparator<Producer>() {
             @Override
             public int compare(Producer o1, Producer o2) {
-                /*int o1val, o2val;
-                //we translate boolean values to integers so it can
-                //be easier to work with
-                if(o1.getEnergyType().isRenewable()) {
-                    o1val = 1;
-                } else {
-                    o1val = 0;
-                }
-
-                if(o2.getEnergyType().isRenewable()) {
-                    o2val = 1;
-                } else {
-                    o2val = 0;
-                }
-
-                if (o1val - o2val != 0) {
-                    return o1val - o2val;
-                } else*/ if (Double.valueOf(o1.getPriceKW())
+                if (Double.valueOf(o1.getPriceKW())
                         .compareTo(Double.valueOf(o2.getPriceKW())) != 0) {
                     return Double.valueOf(o1.getPriceKW())
                             .compareTo(Double.valueOf(o2.getPriceKW()));
@@ -61,13 +51,15 @@ public final class GreenStrategy implements DistributorStrategy{
             }
         });
 
-        greenSortedList.sort((a,b) -> {
-            if (a.getEnergyType().isRenewable() == true && b.getEnergyType().isRenewable() == false)
+        greenSortedList.sort((a, b) -> {
+            if (a.getEnergyType().isRenewable()
+                    && !b.getEnergyType().isRenewable()) {
                 return -1;
-            else if (a.getEnergyType().isRenewable() == false && b.getEnergyType().isRenewable() == true)
+            } else if (!a.getEnergyType().isRenewable()
+                    && b.getEnergyType().isRenewable()) {
                 return 1;
-            else return 0;
-        } );
+            } else return 0;
+        });
 
         int energyQuantity = 0;
         for (int i = 0; i < greenSortedList.size(); i++) {
@@ -75,15 +67,19 @@ public final class GreenStrategy implements DistributorStrategy{
             if (energyQuantity >= distributor.getEnergyNeededKW()) {
                 break;
             }
-            energyQuantity += greenSortedList.get(i).getEnergyPerDistributor();
-            int producerId = greenSortedList.get(i).getId();
-            //calculate cost per producer
-            Double producerCost = greenSortedList.get(i).getEnergyPerDistributor()
-                    * greenSortedList.get(i).getPriceKW();
-            producerCosts.put(producerId, producerCost);
+            if (greenSortedList.get(i).getMaxDistributors()
+                    > greenSortedList.get(i).getObserverDistributors().size()) {
+                energyQuantity += greenSortedList.get(i).getEnergyPerDistributor();
 
-            //add the distributor to the producer's observer list
-            greenSortedList.get(i).addObserverDistributor(distributor);
+                int producerId = greenSortedList.get(i).getId();
+                //calculate cost per producer
+                Double producerCost = greenSortedList.get(i).getEnergyPerDistributor()
+                        * greenSortedList.get(i).getPriceKW();
+                producerCosts.put(producerId, producerCost);
+
+                //add the distributor to the producer's observer list
+                greenSortedList.get(i).addObserverDistributor(distributor);
+            }
         }
         return producerCosts;
     }

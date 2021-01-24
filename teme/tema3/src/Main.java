@@ -1,4 +1,3 @@
-import Utils.Utils;
 import economics.Contract;
 import economics.MonthlyUpdate;
 import entities.Consumer;
@@ -24,14 +23,13 @@ public class Main {
         nrOfTurns = Input.parseInputFromFile(args[0], consumers, distributors,
                 producers, monthlyUpdates);
 
-        //sort producers by id
-        Utils.sortProducersById(producers);
 
         List<Contract> contracts = new ArrayList<>();
 
         //Create and run the simulation
         Simulation simulation = Simulation.getInstance();
-        simulation.runSimulation(consumers, distributors, producers, contracts, monthlyUpdates, nrOfTurns);
+        simulation.runSimulation(consumers, distributors, producers,
+                contracts, monthlyUpdates, nrOfTurns);
 
 
         //generate output and write it to file

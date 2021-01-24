@@ -11,8 +11,18 @@ public final class ProducerFactory {
     }
 
 
-    public static Producer createProducer(final int id, final String energyType, final int maxDistributors,
-                                             final double priceKW, final int energyPerDistributor) {
+    /**
+     * factory method used to instantiate a Producer class object
+     * @param id
+     * @param energyType
+     * @param maxDistributors
+     * @param priceKW
+     * @param energyPerDistributor
+     * @return
+     */
+    public static Producer createProducer(final int id, final String energyType,
+                                          final int maxDistributors,
+                                          final double priceKW, final int energyPerDistributor) {
         return new Producer(id, energyType, maxDistributors, priceKW, energyPerDistributor);
     }
 }

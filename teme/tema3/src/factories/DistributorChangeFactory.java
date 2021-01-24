@@ -17,7 +17,8 @@ public final class DistributorChangeFactory {
      * @param infrastuctureCost
      * @return
      */
-    public static DistributorChange createDistributorChange(final int id, final int infrastuctureCost) {
+    public static DistributorChange createDistributorChange(final int id,
+                                                            final int infrastuctureCost) {
         return new DistributorChange(id, infrastuctureCost);
     }
 }

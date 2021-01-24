@@ -13,9 +13,9 @@ import java.util.List;
  * and holds methods for applying them
  */
 public final class MonthlyUpdate {
-    private List<Consumer> newConsumers;
-    private List<DistributorChange> distributorChanges;
-    private List<ProducerChange> producerChanges;
+    private final List<Consumer> newConsumers;
+    private final List<DistributorChange> distributorChanges;
+    private final List<ProducerChange> producerChanges;
 
     /**
      * initialises a new monthly update with new lists
@@ -54,6 +54,7 @@ public final class MonthlyUpdate {
                     .idToProducerSearch(producers, producerChange.getId());
 
             producer.setEnergyPerDistributor(producerChange.getEnergyPerDistributor());
+            producer.setChanged(true);
         }
     }
 
@@ -77,6 +78,7 @@ public final class MonthlyUpdate {
 
     /**
      * add another producerChange to the producerChanges list
+     *
      * @param producerChange
      */
     public void addProducerChange(final ProducerChange producerChange) {

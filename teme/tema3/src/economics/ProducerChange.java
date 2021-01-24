@@ -10,6 +10,7 @@ public final class ProducerChange {
 
     /**
      * holds monthly changes for a producer(id)
+     *
      * @param id
      * @param energyPerDistributor
      */

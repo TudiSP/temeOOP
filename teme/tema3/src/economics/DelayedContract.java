@@ -77,7 +77,8 @@ public final class DelayedContract extends Contract {
         //if consumer has a contract with the same distributor
         if (contract.distributorId == distributorId) {
             if (consumer.getBudget() - consumerTax - contract.consumerTax < 0) {
-                //consumer goes bankrupt if he can't pay all his taxes(this debt and his current tax)
+                //consumer goes bankrupt if he can't pay all his taxes
+                //(this debt and his current tax)
                 consumer.setBankruptStatus(true);
             } else {
                 consumer.setBudget(consumer.getBudget() - consumerTax);

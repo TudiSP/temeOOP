@@ -1,0 +1,30 @@
+Author: Tudor Hermenean, 324CD
+
+    Short description of the updated function of the project:
+
+            The program works very similarly it's older iteration and it's core
+        methods and flow is almost untouched. The only major addition to the flow
+        are Producer class objects which are implemented in the simulation as
+        follows:
+            0.Initially, all Distributors apply their strategies and are
+            assigned Producers based on them to fulfill their energy demands.
+            1.Their monthly new data is read at the start of the month along
+             with Distributor and Consumer data. Here they are marked as
+             "changed"(information which is held in a boolean) and their new
+             data loaded.
+            2.At the end of the month, after all changes have been made to the
+             other entities, all producers marked as changed will notify their
+             Distributors(observers) of the change and they will reapply their
+             respective strategies to be assigned new Producers.
+
+        The rest of the explanation is done by comments in the actual code.
+
+    Strategy patterns used in:
+        - DistributorStrategy interface
+        - GreenStrategy class
+        - PriceStrategy class
+        - QuantityStrategy class
+
+    Observer patterns used in:
+        - Producer class (observable)
+        - Distributor class (observant)

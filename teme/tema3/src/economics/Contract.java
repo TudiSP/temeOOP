@@ -58,7 +58,8 @@ public class Contract {
 
             //find the consumer and distributor by their id to make changes
             Consumer consumer = Utils.idToConsumerSearch(consumers, contract.consumerId);
-            Distributor distributor = Utils.idToDistributorSearch(distributors, contract.distributorId);
+            Distributor distributor = Utils.idToDistributorSearch(distributors,
+                    contract.distributorId);
 
             //applies contract only if consumer is not bankrupt
             if (!consumer.isBankrupt()) {
@@ -73,7 +74,8 @@ public class Contract {
                 // for future offers
                 if (consumer.isBankrupt()) {
                     distributor.setFormerNrOfContracts(distributor.getFormerNrOfContracts() - 1);
-                    distributor.setBudget(distributor.getBudget() - distributor.getProductionCost());
+                    distributor.setBudget(distributor.getBudget()
+                            - distributor.getProductionCost());
                     i.remove();
                 }
 
@@ -163,7 +165,8 @@ public class Contract {
                 consumer.setContractStatus(true);
 
                 //add new contract to the contract list
-                contracts.add(Distributor.createContract(consumer.getId(), winnerDistributor.getId(),
+                contracts.add(Distributor.createContract(consumer.getId(),
+                        winnerDistributor.getId(),
                         winnerDistributor.getContractPriceProposal(),
                         distributorRevenue, winnerDistributor.getContractLength()));
             }
@@ -257,10 +260,7 @@ public class Contract {
      * @return
      */
     public boolean isExpired() {
-        if (monthsLeft == 0) {
-            return true;
-        }
-        return false;
+        return monthsLeft == 0;
     }
 
     public final int getConsumerTax() {

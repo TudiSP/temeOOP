@@ -3,19 +3,26 @@ package strategies;
 import entities.Distributor;
 import entities.Producer;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-public class PriceStrategy implements DistributorStrategy{
+public final class PriceStrategy implements DistributorStrategy {
     private final String label = "PRICE";
+
     /**
      * Price strategy constructor
      */
-    public PriceStrategy() {}
+    public PriceStrategy() {
+    }
 
     /**
      * Price strategy implementation, prioritises price and quantity
      * in that order. Works by sorting the producers
      * list and then choosing them in the sorted order.
+     *
      * @param distributor
      * @param producers
      * @return a Map of producers id and their costs
@@ -29,17 +36,17 @@ public class PriceStrategy implements DistributorStrategy{
         priceSortedList.sort(new Comparator<Producer>() {
             @Override
             public int compare(Producer o1, Producer o2) {
-                 if (Double.valueOf(o1.getPriceKW())
+                if (Double.valueOf(o1.getPriceKW())
                         .compareTo(Double.valueOf(o2.getPriceKW())) != 0) {
                     return Double.valueOf(o1.getPriceKW())
                             .compareTo(Double.valueOf(o2.getPriceKW()));
-                    } else if (Double.valueOf(o1.getEnergyPerDistributor())
+                } else if (Double.valueOf(o1.getEnergyPerDistributor())
                         .compareTo(Double.valueOf(o2.getEnergyPerDistributor())) != 0) {
-                        return -1 * Double.valueOf(o1.getEnergyPerDistributor())
-                                .compareTo(Double.valueOf(o2.getEnergyPerDistributor()));
-                        } else if (Double.valueOf(o1.getId()).compareTo(Double.valueOf(o2.getId())) != 0) {
-                                return Double.valueOf(o1.getId()).compareTo(Double.valueOf(o2.getId()));
-                             }
+                    return -1 * Double.valueOf(o1.getEnergyPerDistributor())
+                            .compareTo(Double.valueOf(o2.getEnergyPerDistributor()));
+                } else if (Double.valueOf(o1.getId()).compareTo(Double.valueOf(o2.getId())) != 0) {
+                    return Double.valueOf(o1.getId()).compareTo(Double.valueOf(o2.getId()));
+                }
                 return 0;
             }
         });
@@ -49,14 +56,18 @@ public class PriceStrategy implements DistributorStrategy{
             if (energyQuantity >= distributor.getEnergyNeededKW()) {
                 break;
             }
-            energyQuantity += priceSortedList.get(i).getEnergyPerDistributor();
-            int producerId = priceSortedList.get(i).getId();
-            Double producerCost = priceSortedList.get(i).getEnergyPerDistributor()
-                    * priceSortedList.get(i).getPriceKW();
-            producerCosts.put(producerId, producerCost);
+            if (priceSortedList.get(i).getMaxDistributors()
+                    > priceSortedList.get(i).getObserverDistributors().size()) {
+                energyQuantity += priceSortedList.get(i).getEnergyPerDistributor();
 
-            //add the distributor to the producer's observer list
-            priceSortedList.get(i).addObserverDistributor(distributor);
+                int producerId = priceSortedList.get(i).getId();
+                Double producerCost = priceSortedList.get(i).getEnergyPerDistributor()
+                        * priceSortedList.get(i).getPriceKW();
+                producerCosts.put(producerId, producerCost);
+
+                //add the distributor to the producer's observer list
+                priceSortedList.get(i).addObserverDistributor(distributor);
+            }
         }
         return producerCosts;
     }

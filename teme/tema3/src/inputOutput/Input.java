@@ -136,7 +136,8 @@ public final class Input {
             }
 
             //parsing distributor changes
-            JSONArray distributorChangesRaw = (JSONArray) monthlyUpdateJSON.get("distributorChanges");
+            JSONArray distributorChangesRaw = (JSONArray) monthlyUpdateJSON
+                    .get("distributorChanges");
             for (Object distributorChangeRaw : distributorChangesRaw) {
                 if (distributorChangeRaw != null) {
                     JSONObject distributorChangeJSON = (JSONObject) distributorChangeRaw;
@@ -145,8 +146,8 @@ public final class Input {
                             .intValue();
                     //populating distributorChanges list using DistributorChangeFactory class
                     (monthlyUpdates.get(monthlyUpdates.size() - 1))
-                            .addDistributorChange(DistributorChangeFactory.createDistributorChange(id,
-                                    infrastructureCost));
+                            .addDistributorChange(DistributorChangeFactory
+                                    .createDistributorChange(id, infrastructureCost));
                 }
             }
             //parsing producer changes
@@ -155,8 +156,8 @@ public final class Input {
                 if (producerChangeRaw != null) {
                     JSONObject producerChangeJSON = (JSONObject) producerChangeRaw;
                     int id = ((Long) producerChangeJSON.get("id")).intValue();
-                    int energyPerDistributor = ((Long) producerChangeJSON.get("energyPerDistributor"))
-                            .intValue();
+                    int energyPerDistributor = ((Long) producerChangeJSON
+                            .get("energyPerDistributor")).intValue();
                     //populating producerChanges list using CostChangeFactory class
                     (monthlyUpdates.get(monthlyUpdates.size() - 1))
                             .addProducerChange(ProducerChangeFactory.createProducerChange(id,

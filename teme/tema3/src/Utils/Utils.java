@@ -91,13 +91,14 @@ public class Utils {
 
     /**
      * searches and returns a producer based on an id
+     *
      * @param producers
      * @param id
      * @return
      * @throws IllegalStateException
      */
     public static Producer idToProducerSearch(final List<Producer> producers,
-                                                 final int id) throws IllegalStateException {
+                                              final int id) throws IllegalStateException {
 
         for (Producer producer : producers) {
             if (producer.getId() == id) {
@@ -107,16 +108,42 @@ public class Utils {
         throw new IllegalStateException("no producer by that id found.");
     }
 
+    /**
+     * sort a producers list based on their id
+     *
+     * @param producers
+     */
     public static void sortProducersById(final List<Producer> producers) {
         for (int i = 0; i < producers.size() - 1; i++) {
             for (int j = i + 1; j < producers.size(); j++) {
                 if (producers.get(i).getId() > producers.get(j).getId()) {
+                    // simple "bucket" swap
                     Producer aux = producers.get(i);
                     producers.set(i, producers.get(j));
                     producers.set(j, aux);
                 }
             }
         }
+    }
 
+    /**
+     * remove a distributor from producers observer lists
+     *
+     * @param distributor
+     * @param producers
+     */
+    public static void purgeDistributorFromObserverLists(final Distributor distributor,
+                                                         final List<Producer> producers) {
+        int targetId = distributor.getId();
+        for (Producer producer : producers) {
+            List<Distributor> observers = producer.getObserverDistributors();
+            for (int i = 0; i < observers.size(); i++) {
+                if (observers.get(i).getId() == targetId) {
+                    observers.remove(i);
+                    break;
+                }
+            }
+            producer.setObserverDistributors(observers);
+        }
     }
 }

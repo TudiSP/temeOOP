@@ -5,17 +5,20 @@ import entities.Producer;
 
 import java.util.*;
 
-public class QuantityStrategy implements DistributorStrategy{
+public class QuantityStrategy implements DistributorStrategy {
     private final String label = "QUANTITY";
+
     /**
      * Quantity strategy constructor
      */
-    public  QuantityStrategy() {}
+    public QuantityStrategy() {
+    }
 
     /**
      * Quantity strategy implementation, prioritises  quantity.
      * Works by sorting the producers
      * list and then choosing them in the sorted order.
+     *
      * @param distributor
      * @param producers
      * @return a Map of producers id and their costs
@@ -29,7 +32,7 @@ public class QuantityStrategy implements DistributorStrategy{
         quantitySortedList.sort(new Comparator<Producer>() {
             @Override
             public int compare(Producer o1, Producer o2) {
-                 if (Double.valueOf(o1.getEnergyPerDistributor())
+                if (Double.valueOf(o1.getEnergyPerDistributor())
                         .compareTo(Double.valueOf(o2.getEnergyPerDistributor())) != 0) {
                     return -1 * Double.valueOf(o1.getEnergyPerDistributor())
                             .compareTo(Double.valueOf(o2.getEnergyPerDistributor()));
@@ -45,14 +48,18 @@ public class QuantityStrategy implements DistributorStrategy{
             if (energyQuantity >= distributor.getEnergyNeededKW()) {
                 break;
             }
-            energyQuantity += quantitySortedList.get(i).getEnergyPerDistributor();
-            int producerId = quantitySortedList.get(i).getId();
-            Double producerCost = quantitySortedList.get(i).getEnergyPerDistributor()
-                    * quantitySortedList.get(i).getPriceKW();
-            producerCosts.put(producerId, producerCost);
+            if (quantitySortedList.get(i).getMaxDistributors()
+                    > quantitySortedList.get(i).getObserverDistributors().size()) {
+                energyQuantity += quantitySortedList.get(i).getEnergyPerDistributor();
 
-            //add the distributor to the producer's observer list
-            quantitySortedList.get(i).addObserverDistributor(distributor);
+                int producerId = quantitySortedList.get(i).getId();
+                Double producerCost = quantitySortedList.get(i).getEnergyPerDistributor()
+                        * quantitySortedList.get(i).getPriceKW();
+                producerCosts.put(producerId, producerCost);
+
+                //add the distributor to the producer's observer list
+                quantitySortedList.get(i).addObserverDistributor(distributor);
+            }
         }
         return producerCosts;
     }

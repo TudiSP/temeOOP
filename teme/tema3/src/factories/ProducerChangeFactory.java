@@ -2,7 +2,7 @@ package factories;
 
 import economics.ProducerChange;
 
-public class ProducerChangeFactory {
+public final class ProducerChangeFactory {
 
     /**
      * factory objects cannot be instantiated
@@ -12,6 +12,7 @@ public class ProducerChangeFactory {
 
     /**
      * factory method for creating a new ProducerChange object
+     *
      * @param id
      * @param energyPerDistributor
      * @return

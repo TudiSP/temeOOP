@@ -2,12 +2,12 @@ package statistics;
 
 import java.util.List;
 
-public class MonthlyStats {
+public final class MonthlyStats {
     private final int month;
     private final List<Integer> distributorIds;
 
-    public  MonthlyStats(final int month,
-                         final List<Integer> distributorIds) {
+    public MonthlyStats(final int month,
+                        final List<Integer> distributorIds) {
         this.month = month;
         this.distributorIds = distributorIds;
     }
